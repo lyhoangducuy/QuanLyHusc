@@ -1,12 +1,11 @@
 package com.example.quanlyhusc.entity;
-import jakarta.persistence.*;
-import lombok.*;
 
+import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "nguoi_dung")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class NguoiDung {
 
     @Id
@@ -37,4 +36,86 @@ public class NguoiDung {
 
     @Column(name = "cap_nhat_luc", nullable = false)
     private OffsetDateTime capNhatLuc = OffsetDateTime.now();
+    @OneToMany(mappedBy = "nguoiDung",fetch = FetchType.EAGER)
+    private Set<NguoiDungVaiTro> NguoiDungVaiTro;
+
+    public NguoiDung(Long nguoiDungId, String tenDangNhap, String email, String soDienThoai, String matKhauMaHoa,
+            String hoTen, Boolean trangThaiHoatDong, OffsetDateTime taoLuc, OffsetDateTime capNhatLuc,
+            Set<com.example.quanlyhusc.entity.NguoiDungVaiTro> nguoiDungVaiTro) {
+        this.nguoiDungId = nguoiDungId;
+        this.tenDangNhap = tenDangNhap;
+        this.email = email;
+        this.soDienThoai = soDienThoai;
+        this.matKhauMaHoa = matKhauMaHoa;
+        this.hoTen = hoTen;
+        this.trangThaiHoatDong = trangThaiHoatDong;
+        this.taoLuc = taoLuc;
+        this.capNhatLuc = capNhatLuc;
+        NguoiDungVaiTro = nguoiDungVaiTro;
+    }
+    public NguoiDung() {
+    }
+    public Long getNguoiDungId() {
+        return nguoiDungId;
+    }
+    public void setNguoiDungId(Long nguoiDungId) {
+        this.nguoiDungId = nguoiDungId;
+    }
+    public String getTenDangNhap() {
+        return tenDangNhap;
+    }
+    public void setTenDangNhap(String tenDangNhap) {
+        this.tenDangNhap = tenDangNhap;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getSoDienThoai() {
+        return soDienThoai;
+    }
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
+    }
+    public String getMatKhauMaHoa() {
+        return matKhauMaHoa;
+    }
+    public void setMatKhauMaHoa(String matKhauMaHoa) {
+        this.matKhauMaHoa = matKhauMaHoa;
+    }
+    public String getHoTen() {
+        return hoTen;
+    }
+    public void setHoTen(String hoTen) {
+        this.hoTen = hoTen;
+    }
+    public Boolean getTrangThaiHoatDong() {
+        return trangThaiHoatDong;
+    }
+    public void setTrangThaiHoatDong(Boolean trangThaiHoatDong) {
+        this.trangThaiHoatDong = trangThaiHoatDong;
+    }
+    public OffsetDateTime getTaoLuc() {
+        return taoLuc;
+    }
+    public void setTaoLuc(OffsetDateTime taoLuc) {
+        this.taoLuc = taoLuc;
+    }
+    public OffsetDateTime getCapNhatLuc() {
+        return capNhatLuc;
+    }
+    public void setCapNhatLuc(OffsetDateTime capNhatLuc) {
+        this.capNhatLuc = capNhatLuc;
+    }
+    public Set<NguoiDungVaiTro> getNguoiDungVaiTro() {
+        return NguoiDungVaiTro;
+    }
+    public void setNguoiDungVaiTro(Set<NguoiDungVaiTro> nguoiDungVaiTro) {
+        NguoiDungVaiTro = nguoiDungVaiTro;
+    }
+
+    
+    
 }

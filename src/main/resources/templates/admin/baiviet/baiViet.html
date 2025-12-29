@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+    <nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+    <!-- ✅ WRAPPER CHUẨN (cái này thiếu là sidebar hay lỗi) -->
+    <div id="layoutSidenav">
+        <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+        <!-- ✅ Content phải nằm trong layoutSidenav_content -->
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 mt-5">
+                    <!-- bảng của bạn -->
+                    <div class="card shadow-sm">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div>
+                                <i class="fa-solid fa-table me-2"></i>
+                                <span class="fw-semibold">Danh sách bài viết</span>
+                            </div>
+                            <a class="btn btn-sm btn-primary" href="/admin/BaiViet/them">
+                                <i class="fa-solid fa-plus me-1"></i> Thêm bài viết
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width:70px;">ID</th>
+                                            <th style="min-width:320px;">Tiêu đề</th>
+                                            <th style="width:160px;">Tác giả</th>
+                                            <th style="width:120px;">Phạm vi</th>
+                                            <th style="width:90px;">Ghim</th>
+                                            <th style="width:170px;">Tạo lúc</th>
+                                            <th style="width:170px;">Cập nhật</th>
+                                            <th style="width:180px;" class="text-end">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="baiViet : ${dsBaiViet}">
+                                            <!-- ID -->
+                                            <td class="fw-semibold" th:text="${baiViet.baiVietId}"></td>
+
+                                            <!-- Tiêu đề + danh mục (tạm hard) -->
+                                            <td>
+                                                <div class="fw-semibold" th:text="${baiViet.tieuDe}">Tiêu đề</div>
+                                                Danh mục:
+                                                <span th:if="${#sets.isEmpty(baiViet.dsDanhMuc)}" class="text-muted">—</span>
+
+                                                <span th:each="bvdm : ${baiViet.dsDanhMuc}"
+                                                    class="badge bg-secondary me-1"
+                                                    th:text="${bvdm.danhMuc.tenDanhMuc}">
+                                                </span>
+
+                                            </td>
+
+                                            <!-- Tác giả -->
+                                            <td ><span th:text="${baiViet.tacGiaId.hoTen}"></span></td>
+
+                                            <!-- Phạm vi -->
+                                            <td>
+                                                <span class="badge bg-info text-dark"
+                                                    th:text="${baiViet.phamViHienThi}">ALL</span>
+                                            </td>
+
+                                            <!-- Ghim -->
+                                            <td>
+                                                <span th:if="${baiViet.ghim}" class="badge bg-warning text-dark">
+                                                    <i class="fa-solid fa-thumbtack me-1"></i>Ghim
+                                                </span>
+                                                <span th:unless="${baiViet.ghim}"
+                                                    class="badge bg-light text-dark">Không</span>
+                                            </td>
+
+                                            <!-- Thời gian -->
+                                            <td class="text-muted"
+                                                th:text="${#temporals.format(baiViet.taoLuc, 'dd/MM/yyyy HH:mm')}">--
+                                            </td>
+                                            <td class="text-muted"
+                                                th:text="${#temporals.format(baiViet.capNhatLuc, 'dd/MM/yyyy HH:mm')}">
+                                                --</td>
+
+                                            <!-- Thao tác (tạm để button cứng) -->
+                                            <td class="text-end">
+                                                <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/BaiViet/xem/{id}(id=${baiViet.baiVietId})}">Xem</a>
+                                                <a class="btn btn-sm btn-outline-warning" th:href="@{/admin/BaiViet/sua/{id}(id=${baiViet.baiVietId})}">Sửa</a>
+                                                <form class="btn btn-sm" th:action="@{/admin/BaiViet/xoa/{id}(id=${baiViet.baiVietId})}" method="post"
+                                                    onsubmit="return confirm('Xóa nha?');">
+                                                    <button class="btn btn-sm btn-outline-danger btn-sm" type="submit">Xóa</button>
+                                                </form>
+
+                                            </td>
+                                        </tr>
+
+                                        <!-- Nếu ds rỗng -->
+                                        <tr th:if="${dsBaiViet == null or #lists.isEmpty(dsBaiViet)}">
+                                            <td colspan="8" class="text-center text-muted py-4">Không có bài viết nào.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /bảng -->
+                </div>
+            </main>
+
+            <footer th:replace="admin/layouts/footer::footer"></footer>
+        </div>
+    </div>
+
+    <!-- ✅ JS giữ như cũ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script th:src="@{/assets/js/scripts.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

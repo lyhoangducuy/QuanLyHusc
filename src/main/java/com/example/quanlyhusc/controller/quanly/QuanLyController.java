@@ -2,13 +2,15 @@ package com.example.quanlyhusc.controller.quanly;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
+@RequestMapping("/admin")
 public class QuanLyController {
     @GetMapping("/")
     public String getMethodName() {
-        return "quanly/DashBoardAdmin";
+        return "admin/DashBoardAdmin";
     }
     
 }
