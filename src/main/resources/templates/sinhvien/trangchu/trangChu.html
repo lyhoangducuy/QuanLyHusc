@@ -1,38 +1,96 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-   <head th:replace="sinhvien/layouts/header::header"></head>
-    <body>
-        <!-- Responsive navbar-->
-        <nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
-        <!-- Page Content-->
-        <div class="container px-4 px-lg-5">
-            <!-- Heading Row-->
-            <div class="row gx-4 gx-lg-5 align-items-center my-5">
-                <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg" alt="..." /></div>
-                <div class="col-lg-5">
-                    <h1 class="font-weight-light">Business Name or Tagline</h1>
-                    <p>This is a template that is great for small businesses. It doesn't have too much fancy flare to it, but it makes a great use of the standard Bootstrap core components. Feel free to use this template for any project you want!</p>
-                    <a class="btn btn-primary" href="#!">Call to Action!</a>
-                </div>
+<head th:replace="sinhvien/layouts/header::header"></head>
+<body>
+  <!-- Responsive navbar-->
+  <nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
+
+  <!-- Page Content-->
+  <main class="container px-4 px-lg-5">
+
+    <!-- HERO / BÀI GHIM -->
+    <section class="my-5">
+      <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="row g-0 align-items-stretch">
+          <div class="col-lg-7">
+            <img class="img-fluid w-100 h-100 object-fit-cover"
+                 style="min-height: 260px;"
+                 src="https://dummyimage.com/1200x700/dee2e6/6c757d.jpg"
+                 alt="Ảnh minh họa" />
+          </div>
+
+          <div class="col-lg-5">
+            <div class="card-body p-4 p-lg-5">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge text-bg-primary">Bài viết ghim</span>
+                <span class="text-muted small">Cập nhật mới</span>
+              </div>
+
+              <h1 class="fw-bold mb-3" th:text="${baiVietGhim.tieuDe}"></h1>
+
+              <p class="text-muted mb-4"
+                 style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;"
+                 th:text="${baiVietGhim.noiDung}">
+              </p>
+
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-primary px-4"
+                   th:href="@{/BaiViet/{id}(id=${baiVietGhim.baiVietId})}">
+                  Xem chi tiết
+                </a>
+                <a class="btn btn-outline-secondary px-4" href="#dsBaiViet">
+                  Xem tất cả
+                </a>
+              </div>
             </div>
-            <!-- Content Row-->
-                <div class="row gx-4 gx-lg-5" th:each="baiViet : ${dsBaiViet}">
-                    <div class="col-md-4 mb-5">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h2 class="card-title" th:text="${baiViet.tieuDe}"></h2>
-                                <p class="card-text" th:text="${baiViet.noiDung}"></p>
-                            </div>
-                            <div class="card-footer"><a class="btn btn-primary btn-sm" th:href="@{/BaiViet/{id}(id=${baiViet.baiVietId})}">Xem chi tiet</a></div>
-                        </div>
-                    </div>
-                </div>
+          </div>
         </div>
-        <!-- Footer-->
-        <footer th:replace="sinhvien/layouts/footer::footer"></footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script th:src="@{/assets/js/sinhvien.js}"></script>
-    </body>
+      </div>
+    </section>
+
+    <!-- DANH SÁCH BÀI VIẾT -->
+    <section id="dsBaiViet" class="mb-5">
+      <div class="d-flex align-items-end justify-content-between mb-3">
+        <div>
+          <h3 class="fw-semibold mb-0">Bài viết mới</h3>
+          <div class="text-muted small">Tổng hợp thông báo, sự kiện và nội dung cập nhật</div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-4" th:each="baiViet : ${dsBaiViet}">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold mb-2"
+                  style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+                  th:text="${baiViet.tieuDe}">
+              </h5>
+
+              <p class="card-text text-muted mb-3"
+                 style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
+                 th:text="${baiViet.noiDung}">
+              </p>
+
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="small text-muted" th:text="${baiViet.taoLuc}"></span>
+                <a class="btn btn-sm btn-outline-primary"
+                   th:href="@{/BaiViet/{id}(id=${baiViet.baiVietId})}">
+                  Xem chi tiết
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer-->
+  <footer th:replace="sinhvien/layouts/footer::footer"></footer>
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/assets/js/sinhvien.js}"></script>
+</body>
 </html>

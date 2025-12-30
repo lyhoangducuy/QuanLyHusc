@@ -18,14 +18,17 @@ public class SinhVienController {
     private BaiVietService baiVietService;
     @GetMapping("/")
     public String getTrangChu(Model model) {
+        model.addAttribute("baiVietGhim",this.baiVietService.findByGhimIsTrue());
         model.addAttribute("dsBaiViet", this.baiVietService.getAll());
         return "sinhvien/trangchu/trangChu";
     }
     @GetMapping("/BaiViet/{id}")
     public String getBaiViet(@PathVariable("id")Long id,Model model) {
-        model.addAttribute("baiViet",this.baiVietService.findById(id));
+        BaiViet baiViet = baiVietService.findByIdFetchDsTep(id);
+        model.addAttribute("baiViet",baiViet);
         return "sinhvien/trangchu/chiTietBaiViet";
     }
+    
     
     
 }

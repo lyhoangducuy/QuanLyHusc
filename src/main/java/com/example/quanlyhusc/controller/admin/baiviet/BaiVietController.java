@@ -1,4 +1,4 @@
-package com.example.quanlyhusc.controller.baiviet;
+package com.example.quanlyhusc.controller.admin.baiviet;
 
 import java.util.List;
 
@@ -12,16 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.quanlyhusc.dto.baiviet.BaiVietDTO;
-import com.example.quanlyhusc.entity.CustomUserDetails;
 import com.example.quanlyhusc.entity.baiviet.BaiViet;
 import com.example.quanlyhusc.service.baiviet.BaiVietService;
-import com.example.quanlyhusc.service.baiviet.BaiVietServiceImple;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-
-import jakarta.websocket.server.PathParam;
+import com.example.quanlyhusc.service.baiviet.DanhMucBaiVietService;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 
 
@@ -31,20 +27,24 @@ public class BaiVietController {
 
     @Autowired
     private BaiVietService baiVietService;
+    @Autowired
+    private DanhMucBaiVietService danhMucBaiVietService;
 
     @GetMapping("")
     public String getBaiViet(Model model){
         List<BaiViet> ds=this.baiVietService.getAll();
+        
         model.addAttribute("dsBaiViet", ds);
         return "admin/baiviet/baiViet";
     }
     @GetMapping("/them")
     public String getThem(Model model) {
+        model.addAttribute("dsDanhMuc", this.danhMucBaiVietService.findAll());
         return "admin/baiviet/themBaiViet";
     }
     @PostMapping("/them")
-    public String themBaiViet(@ModelAttribute BaiVietDTO baiVietDTO) {
-        baiVietService.create(baiVietDTO);
+    public String themBaiViet(@ModelAttribute BaiVietDTO baiVietDTO, @RequestParam("files") MultipartFile[] file) {
+        baiVietService.create(baiVietDTO,file);
         return "redirect:/admin/BaiViet";   
     }
     @GetMapping("/xem/{id}")
@@ -69,5 +69,7 @@ public class BaiVietController {
         baiVietService.update(id, dto);
         return "redirect:/admin/BaiViet";
     }
+
+    
     
 }

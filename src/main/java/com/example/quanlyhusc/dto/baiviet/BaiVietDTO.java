@@ -1,6 +1,7 @@
 package com.example.quanlyhusc.dto.baiviet;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.quanlyhusc.entity.baiviet.TepDinhKemBaiViet;
@@ -11,15 +12,24 @@ public class BaiVietDTO {
     private String noiDung;
     private boolean ghim;
     private Set<TepDinhKemBaiViet> dsTep = new HashSet<>();
+    private List<Long> danhMucIds;
     public BaiVietDTO() {
     }
-    public BaiVietDTO(Long tacGiaId,String tieuDe, String noiDung, boolean ghim, Set<TepDinhKemBaiViet> dsTep) {
+    
+    
+    
+    public BaiVietDTO(Long tacGiaId, String tieuDe, String noiDung, boolean ghim, Set<TepDinhKemBaiViet> dsTep,
+            List<Long> danhMucIds) {
         this.tacGiaId = tacGiaId;
         this.tieuDe = tieuDe;
         this.noiDung = noiDung;
         this.ghim = ghim;
         this.dsTep = dsTep;
+        this.danhMucIds = danhMucIds;
     }
+
+
+
     public Long getTacGiaId() {
         return tacGiaId;
     }
@@ -50,6 +60,11 @@ public class BaiVietDTO {
     public void setDsTep(Set<TepDinhKemBaiViet> dsTep) {
         this.dsTep = dsTep;
     }
-    
+    public List<Long> getDanhMucIds() {
+        return danhMucIds;
+    }
+    public void setDanhMucIds(List<Long> danhMucIds) {
+        this.danhMucIds = danhMucIds;
+    }
     
 }

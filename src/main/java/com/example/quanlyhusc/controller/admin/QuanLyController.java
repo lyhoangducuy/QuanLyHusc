@@ -1,4 +1,4 @@
-package com.example.quanlyhusc.controller.quanly;
+package com.example.quanlyhusc.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

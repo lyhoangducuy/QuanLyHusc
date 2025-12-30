@@ -4,11 +4,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.quanlyhusc.entity.NguoiDung;
 import com.example.quanlyhusc.repository.NguoiDungRepository;
+import com.example.quanlyhusc.service.uploadfile.StorageService;
 
 @SpringBootApplication
 public class QuanlyhuscApplication {
@@ -31,5 +31,6 @@ CommandLineRunner seed(NguoiDungRepository repo, PasswordEncoder encoder) {
 		SpringApplication.run(QuanlyhuscApplication.class, args);
 		
 	}
+    
 
 }

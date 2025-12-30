@@ -1,4 +1,4 @@
-package com.example.quanlyhusc.controller.baiviet;
+package com.example.quanlyhusc.controller.admin.baiviet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

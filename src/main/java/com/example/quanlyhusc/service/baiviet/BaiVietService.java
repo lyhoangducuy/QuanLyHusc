@@ -1,14 +1,20 @@
 package com.example.quanlyhusc.service.baiviet;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.quanlyhusc.dto.baiviet.BaiVietDTO;
 import com.example.quanlyhusc.entity.baiviet.BaiViet;
+import com.example.quanlyhusc.entity.baiviet.TepDinhKemBaiViet;
 import com.example.quanlyhusc.repository.NguoiDungRepository;
 import com.example.quanlyhusc.repository.baiviet.BaiVietRepository;
+import com.example.quanlyhusc.service.uploadfile.FileSystemStorageService;
+import com.example.quanlyhusc.service.uploadfile.StorageService;
 @Service
 public class BaiVietService implements BaiVietServiceImple {
 
@@ -16,6 +22,8 @@ public class BaiVietService implements BaiVietServiceImple {
     private BaiVietRepository baiVietRepository;
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+    @Autowired
+    private StorageService storageService;
 
     @Override
     public List<BaiViet> getAll() {
@@ -53,23 +61,67 @@ public class BaiVietService implements BaiVietServiceImple {
     }
    
 
+    @Transactional
     @Override
-    public Boolean create(BaiVietDTO baiVietDTO) {
+    public Boolean create(BaiVietDTO dto, MultipartFile[] files) {
         try {
             BaiViet baiViet = new BaiViet();
-            baiViet.setTieuDe(baiVietDTO.getTieuDe());
-            baiViet.setNoiDung(baiVietDTO.getNoiDung());
-            baiViet.setGhim(baiVietDTO.isGhim());
+            baiViet.setTieuDe(dto.getTieuDe());
+            baiViet.setNoiDung(dto.getNoiDung());
+            baiViet.setGhim(dto.isGhim());
             baiViet.setPhamViHienThi("ALL");
-            baiViet.setDsTep(baiVietDTO.getDsTep());
-            baiViet.setTacGiaId(nguoiDungRepository.findByNguoiDungId(baiVietDTO.getTacGiaId()));
-            this.baiVietRepository.save(baiViet);
+            baiViet.setTacGiaId(nguoiDungRepository.findByNguoiDungId(dto.getTacGiaId()));
+
+            if (files != null) {
+                for (MultipartFile file : files) {
+                    if (file == null || file.isEmpty()) continue;
+
+                    // store xong lấy URL thật (khuyên m store trả về url)
+                    storageService.store(file);
+
+                    TepDinhKemBaiViet tep = new TepDinhKemBaiViet();
+                    tep.setTenTep(file.getOriginalFilename());
+                    tep.setDuongDanUrl("/uploads/fileBaiViet/" + file.getOriginalFilename());
+                    tep.setKichThuoc(file.getSize());
+
+                    String ct = file.getContentType();
+                    String loai = (ct != null && ct.startsWith("image/")) ? "IMAGE"
+                            : (ct != null && ct.startsWith("video/")) ? "VIDEO"
+                            : "FILE";
+                    tep.setLoaiTep(loai);
+
+                    // ✅ QUAN TRỌNG: set FK
+                    tep.setBaiViet(baiViet);
+
+                    // ✅ add vào danh sách con
+                    baiViet.getDsTep().add(tep);
+                }
+            }
+
+            baiVietRepository.save(baiViet); // ✅ tự insert BaiViet + insert Tep
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
+
+    @Override
+    public BaiViet findByIdFetchDsTep(Long id) {
+        try {
+            return this.baiVietRepository.findByIdFetchDsTep(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public BaiViet findByGhimIsTrue() {
+        return this.baiVietRepository.findByGhimIsTrue();
+    }
+
 
    
 }
