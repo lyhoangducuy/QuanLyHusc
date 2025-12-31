@@ -1,7 +1,6 @@
 package com.example.quanlyhusc.service.baiviet;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.quanlyhusc.dto.baiviet.BaiVietDTO;
 import com.example.quanlyhusc.entity.baiviet.BaiViet;
+import com.example.quanlyhusc.entity.baiviet.PhamViHienThi;
 import com.example.quanlyhusc.entity.baiviet.TepDinhKemBaiViet;
 import com.example.quanlyhusc.repository.NguoiDungRepository;
 import com.example.quanlyhusc.repository.baiviet.BaiVietRepository;
-import com.example.quanlyhusc.service.uploadfile.FileSystemStorageService;
 import com.example.quanlyhusc.service.uploadfile.StorageService;
 @Service
 public class BaiVietService implements BaiVietServiceImple {
@@ -71,7 +70,7 @@ public class BaiVietService implements BaiVietServiceImple {
             baiViet.setTieuDe(dto.getTieuDe());
             baiViet.setNoiDung(dto.getNoiDung());
             baiViet.setGhim(dto.isGhim());
-            baiViet.setPhamViHienThi("ALL");
+            baiViet.setPhamViHienThi(PhamViHienThi.ALL);
             baiViet.setTacGiaId(nguoiDungRepository.findByNguoiDungId(dto.getTacGiaId()));
 
             if (files != null) {

@@ -28,8 +28,9 @@ public class BaiViet {
     @Column(name = "ghim", nullable = false)
     private Boolean ghim = false;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "pham_vi_hien_thi", nullable = false, length = 20)
-    private String phamViHienThi = "ALL"; // ALL/STUDENT/MANAGER
+    private PhamViHienThi phamViHienThi = PhamViHienThi.ALL;
 
     @Column(name = "tao_luc", nullable = false)
     private OffsetDateTime taoLuc = OffsetDateTime.now();
@@ -43,10 +44,22 @@ public class BaiViet {
     @OneToMany(mappedBy = "baiViet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TepDinhKemBaiViet> dsTep = new HashSet<>();
 
+    @PrePersist
+    protected void onCreate() {
+        OffsetDateTime now = OffsetDateTime.now();
+        this.taoLuc = now;
+        this.capNhatLuc = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.capNhatLuc = OffsetDateTime.now();
+    }
+
     public BaiViet() {
     }
 
-    public BaiViet(Long id, NguoiDung tacGia, String tieuDe, String noiDung, Boolean ghim, String phamViHienThi,
+    public BaiViet(Long id, NguoiDung tacGia, String tieuDe, String noiDung, Boolean ghim, PhamViHienThi phamViHienThi,
             OffsetDateTime taoLuc, OffsetDateTime capNhatLuc, Set<BaiVietDanhMuc> dsDanhMuc,
             Set<TepDinhKemBaiViet> dsTep) {
         this.baiVietId = id;
@@ -60,7 +73,7 @@ public class BaiViet {
         this.dsDanhMuc = dsDanhMuc;
         this.dsTep = dsTep;
     }
-    public BaiViet(NguoiDung tacGia, String tieuDe, String noiDung, Boolean ghim, String phamViHienThi,Set<BaiVietDanhMuc> dsDanhMuc,
+    public BaiViet(NguoiDung tacGia, String tieuDe, String noiDung, Boolean ghim, PhamViHienThi phamViHienThi,Set<BaiVietDanhMuc> dsDanhMuc,
             Set<TepDinhKemBaiViet> dsTep) {
         this.tacGiaId = tacGia;
         this.tieuDe = tieuDe;
@@ -111,11 +124,11 @@ public class BaiViet {
         this.ghim = ghim;
     }
 
-    public String getPhamViHienThi() {
+    public PhamViHienThi getPhamViHienThi() {
         return phamViHienThi;
     }
 
-    public void setPhamViHienThi(String phamViHienThi) {
+    public void setPhamViHienThi(PhamViHienThi phamViHienThi) {
         this.phamViHienThi = phamViHienThi;
     }
 

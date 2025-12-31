@@ -58,7 +58,7 @@
                                     </tbody>
 
                                 </table>
-                                <ul class="pagination justify-content-center mt-4">
+                                <ul class="pagination justify-content-center mt-4" th:if="${dsDanhMuc != null and !#lists.isEmpty(dsDanhMuc)}">
                                     <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
                                         <a class="page-link" th:href="@{/admin/DanhMuc(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
                                     </li>

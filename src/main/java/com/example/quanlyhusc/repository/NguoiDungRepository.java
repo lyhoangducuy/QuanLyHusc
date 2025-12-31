@@ -3,7 +3,6 @@ package com.example.quanlyhusc.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.quanlyhusc.entity.NguoiDung;
-import java.util.List;
 
 
 
