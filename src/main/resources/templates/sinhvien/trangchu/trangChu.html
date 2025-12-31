@@ -8,8 +8,29 @@
   <!-- Page Content-->
   <main class="container px-4 px-lg-5">
 
+    <!-- 🔎 SEARCH BAR -->
+    <section class="my-4">
+      <form th:action="@{/}" method="get" class="row g-2 align-items-center">
+        <div class="col-12 col-md-9">
+          <div class="input-group">
+            <span class="input-group-text">🔎</span>
+            <input class="form-control"
+                   type="text"
+                   name="keyword"
+                   placeholder="Tìm theo tiêu đề bài viết..."
+                   th:value="${keyword}">
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 d-grid">
+          <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+        </div>
+      </form>
+    </section>
+
     <!-- HERO / BÀI GHIM -->
-    <section class="my-5">
+    <section class="my-5"
+             th:if="${baiVietGhim != null and (keyword == null or #strings.isEmpty(keyword))}">
       <div class="card border-0 shadow-sm overflow-hidden">
         <div class="row g-0 align-items-stretch">
           <div class="col-lg-7">
@@ -53,11 +74,27 @@
       <div class="d-flex align-items-end justify-content-between mb-3">
         <div>
           <h3 class="fw-semibold mb-0">Bài viết mới</h3>
-          <div class="text-muted small">Tổng hợp thông báo, sự kiện và nội dung cập nhật</div>
+          <div class="text-muted small">
+            <span th:if="${keyword != null and !#strings.isEmpty(keyword)}">
+              Kết quả tìm kiếm cho: <b th:text="${keyword}"></b>
+            </span>
+            <span th:unless="${keyword != null and !#strings.isEmpty(keyword)}">
+              Tổng hợp thông báo, sự kiện và nội dung cập nhật
+            </span>
+          </div>
         </div>
       </div>
 
-      <div class="row g-4">
+      <!-- ✅ EMPTY STATE -->
+      <div class="alert alert-light border shadow-sm py-4 text-center"
+          th:if="${dsBaiViet == null or dsBaiViet.totalElements == 0}">
+        <div class="fw-semibold mb-1">Không có kết quả 😅</div>
+        <div class="text-muted small">Thử từ khóa khác nha.</div>
+      </div>
+
+
+      <!-- ✅ LIST -->
+      <div class="row g-4" th:if="${dsBaiViet != null and !#lists.isEmpty(dsBaiViet)}">
         <div class="col-12 col-md-6 col-lg-4" th:each="baiViet : ${dsBaiViet}">
           <div class="card h-100 border-0 shadow-sm">
             <div class="card-body p-4">
@@ -81,7 +118,26 @@
             </div>
           </div>
         </div>
+        <!-- ✅ PAGINATION -->
+        <ul class="pagination justify-content-center mt-4"
+            th:if="${dsBaiViet != null and dsBaiViet.totalPages > 1}">
+          <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+            <a class="page-link" th:href="@{/(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+          </li>
+
+          <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+              th:classappend="${i == currentpage} ? 'active'">
+            <a class="page-link" th:href="@{/(pageNo=${i}, keyword=${keyword})}" th:text="${i}">1</a>
+          </li>
+
+          <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+            <a class="page-link" th:href="@{/(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+          </li>
+        </ul>
+
+        
       </div>
+      
     </section>
 
   </main>

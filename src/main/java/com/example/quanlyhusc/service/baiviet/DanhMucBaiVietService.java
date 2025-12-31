@@ -3,6 +3,8 @@ package com.example.quanlyhusc.service.baiviet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.quanlyhusc.entity.baiviet.DanhMucBaiViet;
@@ -44,13 +46,25 @@ public class DanhMucBaiVietService implements DanhMucBaiVietImple {
        }
     }
     @Override
-    public List<DanhMucBaiViet> findAll() {
-       return this.danhMucBaiVietRepository.findAll();
+    public Page<DanhMucBaiViet> getAll(int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, 6);
+       return this.danhMucBaiVietRepository.findAll(pageable);
     }
 
     @Override
     public DanhMucBaiViet findById(Long id) {
         return this.danhMucBaiVietRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<DanhMucBaiViet> searchByTenDanhMuc(String keyword,int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, 6);
+        return this.danhMucBaiVietRepository.findByTenDanhMucContainingIgnoreCase(keyword,pageable);
+    }
+
+    @Override
+    public List<DanhMucBaiViet> findAll() {
+        return this.danhMucBaiVietRepository.findAll();
     }
     
 }

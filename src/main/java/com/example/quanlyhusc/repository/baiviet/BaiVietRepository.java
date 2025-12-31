@@ -2,6 +2,9 @@ package com.example.quanlyhusc.repository.baiviet;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +31,19 @@ public interface BaiVietRepository extends JpaRepository<BaiViet,Long>{
 
 
     void deleteById(Long id);
+    @Query("""
+        SELECT distinct bv FROM BaiViet bv
+        left join fetch bv.tacGiaId
+        left join fetch bv.dsDanhMuc bvdm
+        left join fetch bvdm.danhMuc
+        left join fetch bv.dsTep
+        WHERE bv.tieuDe LIKE %:keyword%
+    """)
+    List<BaiViet> searchByTieuDe(String keyword);
+    @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc"})
+    @Query("select bv from BaiViet bv")
+    Page<BaiViet> getAllPage(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc"})
+    Page<BaiViet> findByTieuDeContainingIgnoreCase(String keyword, Pageable pageable);
 }

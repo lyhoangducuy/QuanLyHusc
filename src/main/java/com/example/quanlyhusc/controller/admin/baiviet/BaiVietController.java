@@ -3,6 +3,8 @@ package com.example.quanlyhusc.controller.admin.baiviet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +33,26 @@ public class BaiVietController {
     private DanhMucBaiVietService danhMucBaiVietService;
 
     @GetMapping("")
-    public String getBaiViet(Model model){
-        List<BaiViet> ds=this.baiVietService.getAll();
-        
-        model.addAttribute("dsBaiViet", ds);
+    public String getBaiViet(
+            Model model,
+            @RequestParam(name="keyword", required=false) String keyword,
+            @RequestParam(name="pageNo", defaultValue="1") int pageNo) {
+        Page<BaiViet> page;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            page = baiVietService.search(keyword.trim(), pageNo); // tao đưa dưới
+        } else {
+            page = baiVietService.getAll(pageNo);
+        }
+
+        model.addAttribute("totalpage", page.getTotalPages());
+        model.addAttribute("currentpage", pageNo);
+        model.addAttribute("dsBaiViet", page.getContent());
+        model.addAttribute("keyword", keyword);
+
         return "admin/baiviet/baiViet";
     }
+
     @GetMapping("/them")
     public String getThem(Model model) {
         model.addAttribute("dsDanhMuc", this.danhMucBaiVietService.findAll());

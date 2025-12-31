@@ -1,6 +1,8 @@
 package com.example.quanlyhusc.controller.admin.baiviet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -23,8 +25,21 @@ public class DanhMucBaiVietController {
     private DanhMucBaiVietService danhMucBaiVietService;
     
     @GetMapping("")
-    public String getMethodName(Model model) {
-        model.addAttribute("dsDanhMuc",this.danhMucBaiVietService.findAll());
+    public String getMethodName(Model model,@RequestParam(name="keyword", required=false) String keyword,
+            @RequestParam(name="pageNo", defaultValue="1") int pageNo) {
+        if (keyword != null && !keyword.isEmpty()) {
+            Page<DanhMucBaiViet> list=this.danhMucBaiVietService.searchByTenDanhMuc(keyword,pageNo);
+            model.addAttribute("dsDanhMuc",list);
+            model.addAttribute("totalpage",list.getTotalPages());
+            model.addAttribute("currentpage",pageNo);
+        } else {
+            Page<DanhMucBaiViet> list=this.danhMucBaiVietService.getAll(pageNo);
+            model.addAttribute("dsDanhMuc",list);
+            model.addAttribute("dsDanhMuc",list);
+            model.addAttribute("totalpage",list.getTotalPages());
+            model.addAttribute("currentpage",pageNo);
+        }
+        model.addAttribute("keyword", keyword);
         return "admin/baiviet/danhmuc/danhMuc";
     }
     @GetMapping("/them")

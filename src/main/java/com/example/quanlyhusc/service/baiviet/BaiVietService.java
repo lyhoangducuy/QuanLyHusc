@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -120,6 +122,21 @@ public class BaiVietService implements BaiVietServiceImple {
     @Override
     public BaiViet findByGhimIsTrue() {
         return this.baiVietRepository.findByGhimIsTrue();
+    }
+
+    @Override
+    public List<BaiViet> searchByTieuDe(String keyword) {
+        return this.baiVietRepository.searchByTieuDe(keyword);
+    }
+    @Override
+    public Page<BaiViet> getAll(int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, 6);
+        return baiVietRepository.getAllPage(pageable);
+    }
+    @Override
+    public Page<BaiViet> search(String keyword, int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, 6);
+        return baiVietRepository.findByTieuDeContainingIgnoreCase(keyword, pageable);
     }
 
 

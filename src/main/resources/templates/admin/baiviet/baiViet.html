@@ -14,6 +14,13 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4 mt-5">
+                    <!-- Navbar Search-->
+                    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                        <div class="input-group">
+                            <input class="form-control" name="keyword" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch"  th:value="${keyword}"/>
+                            <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
                     <!-- bảng của bạn -->
                     <div class="card shadow-sm">
                         <div class="card-header d-flex align-items-center justify-content-between">
@@ -105,6 +112,20 @@
                                     </tbody>
 
                                 </table>
+                                <ul class="pagination justify-content-center mt-4">
+                                    <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/admin/BaiViet(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+                                        th:classappend="${i == currentpage} ? 'active'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/BaiViet(pageNo=${i}, keyword=${keyword})}"
+                                            th:text="${i}">1</a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/admin/BaiViet(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>

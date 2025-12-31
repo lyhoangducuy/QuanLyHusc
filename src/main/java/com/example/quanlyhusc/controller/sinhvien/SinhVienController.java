@@ -1,6 +1,7 @@
 package com.example.quanlyhusc.controller.sinhvien;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +18,23 @@ public class SinhVienController {
     @Autowired
     private BaiVietService baiVietService;
     @GetMapping("/")
-    public String getTrangChu(Model model) {
-        model.addAttribute("baiVietGhim",this.baiVietService.findByGhimIsTrue());
-        model.addAttribute("dsBaiViet", this.baiVietService.getAll());
+    public String getTrangChu(Model model,@RequestParam(name="keyword", required=false) String keyword,
+            @RequestParam(name="pageNo", defaultValue="1") int pageNo) {
+        
+        if (keyword != null && !keyword.isEmpty()) {
+            Page<BaiViet> list=this.baiVietService.search(keyword,pageNo);
+            model.addAttribute("dsBaiViet",list);
+            model.addAttribute("totalpage",list.getTotalPages());
+            model.addAttribute("currentpage",pageNo);
+            model.addAttribute("baiVietGhim", null);
+            model.addAttribute("keyword", keyword);
+        } else {
+            Page<BaiViet> list=this.baiVietService.getAll(pageNo);
+            model.addAttribute("dsBaiViet",list);
+            model.addAttribute("totalpage",list.getTotalPages());
+            model.addAttribute("currentpage",pageNo);
+            model.addAttribute("baiVietGhim",this.baiVietService.findByGhimIsTrue());
+        }
         return "sinhvien/trangchu/trangChu";
     }
     @GetMapping("/BaiViet/{id}")
