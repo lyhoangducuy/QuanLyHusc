@@ -11,7 +11,4 @@ public class NguoiDungController {
     public String getLogin() {
         return "auth/login";
     }
-    public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("123456"));
-    }
 }

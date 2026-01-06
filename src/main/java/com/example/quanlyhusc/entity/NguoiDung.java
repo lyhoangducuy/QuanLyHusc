@@ -2,7 +2,10 @@ package com.example.quanlyhusc.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.Set;
+
+import com.example.quanlyhusc.entity.chat.CuocTroChuyen;
 
 @Entity
 @Table(name = "nguoi_dung")
@@ -37,11 +40,11 @@ public class NguoiDung {
     @Column(name = "cap_nhat_luc", nullable = false)
     private OffsetDateTime capNhatLuc = OffsetDateTime.now();
     @OneToMany(mappedBy = "nguoiDung",fetch = FetchType.EAGER)
-    private Set<NguoiDungVaiTro> NguoiDungVaiTro;
+    private Set<NguoiDungVaiTro> nguoiDungVaiTro;
 
     public NguoiDung(Long nguoiDungId, String tenDangNhap, String email, String soDienThoai, String matKhauMaHoa,
             String hoTen, Boolean trangThaiHoatDong, OffsetDateTime taoLuc, OffsetDateTime capNhatLuc,
-            Set<com.example.quanlyhusc.entity.NguoiDungVaiTro> nguoiDungVaiTro) {
+            Set<NguoiDungVaiTro> nguoiDungVaiTro) {
         this.nguoiDungId = nguoiDungId;
         this.tenDangNhap = tenDangNhap;
         this.email = email;
@@ -51,7 +54,8 @@ public class NguoiDung {
         this.trangThaiHoatDong = trangThaiHoatDong;
         this.taoLuc = taoLuc;
         this.capNhatLuc = capNhatLuc;
-        NguoiDungVaiTro = nguoiDungVaiTro;
+        this.nguoiDungVaiTro = nguoiDungVaiTro;
+
     }
     public NguoiDung() {
     }
@@ -110,10 +114,11 @@ public class NguoiDung {
         this.capNhatLuc = capNhatLuc;
     }
     public Set<NguoiDungVaiTro> getNguoiDungVaiTro() {
-        return NguoiDungVaiTro;
+        return nguoiDungVaiTro;
     }
     public void setNguoiDungVaiTro(Set<NguoiDungVaiTro> nguoiDungVaiTro) {
-        NguoiDungVaiTro = nguoiDungVaiTro;
+        this.nguoiDungVaiTro = nguoiDungVaiTro;
+
     }
 
     

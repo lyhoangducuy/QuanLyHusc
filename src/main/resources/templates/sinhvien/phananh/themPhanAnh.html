@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="sinhvien/layouts/header::header"></head>
+
+<body>
+<nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
+
+<main class="container px-4 px-lg-5 my-4 my-lg-5">
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-9">
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-bullhorn"></i>
+              <div>
+                <div class="fw-semibold">Tạo phản ánh</div>
+                <div class="text-muted small">Nhập nội dung và đính kèm file nếu cần</div>
+              </div>
+            </div>
+
+            <!-- optional: nút quay lại -->
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/PhanAnh}">
+              <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body p-3 p-lg-4">
+
+          <!-- ✅ Thông báo (optional) -->
+          <div class="alert alert-success" th:if="${msgSuccess != null}" th:text="${msgSuccess}"></div>
+          <div class="alert alert-danger" th:if="${msgError != null}" th:text="${msgError}"></div>
+
+          <form th:action="@{/PhanAnh/them}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <input type="hidden" name="nguoiGui" th:value="${#authentication.principal.nguoiDungId}">
+
+            <div class="row g-4">
+              <!-- LEFT: Nội dung -->
+              <div class="col-12 col-lg-8">
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Tiêu đề</label>
+                  <input class="form-control" type="text" name="tieuDe"
+                         placeholder="VD: Đèn đường không sáng..."
+                         required>
+                  <div class="invalid-feedback">Vui lòng nhập tiêu đề.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Mô tả</label>
+                  <textarea class="form-control" name="moTa" rows="7"
+                            placeholder="Mô tả chi tiết tình trạng, thời gian, mức độ..."
+                            required></textarea>
+                  <div class="invalid-feedback">Vui lòng nhập mô tả.</div>
+                </div>
+
+                <div class="mb-0">
+                  <label class="form-label fw-semibold">Địa chỉ mô tả</label>
+                  <input class="form-control" type="text" name="diaChiMoTa"
+                         placeholder="VD: 12 Trần Phú, TP Huế">
+                </div>
+
+              </div>
+
+              <!-- RIGHT: Loại + file + submit -->
+              <div class="col-12 col-lg-4">
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Loại phản ánh</label>
+
+                  <!-- ✅ nên để 1 loại thôi vì bảng phan_anh chỉ có 1 loai_id -->
+                  <select class="form-select" name="loaiPhanAnhId" required>
+                    <option value="" selected disabled>-- Chọn loại --</option>
+                    <option th:each="l : ${dsLoaiPhanAnh}"
+                            th:value="${l.loaiId}"
+                            th:text="${l.tenLoai}">
+                    </option>
+                  </select>
+
+                  <div class="invalid-feedback">Vui lòng chọn loại phản ánh.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Đính kèm</label>
+                  <input type="file" name="files" class="form-control" multiple>
+                  <div class="form-text">
+                    Có thể chọn nhiều file (ảnh/video/tài liệu).
+                  </div>
+                </div>
+
+                <div class="d-grid mt-4">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-paper-plane me-1"></i> Gửi phản ánh
+                  </button>
+                </div>
+
+                <div class="text-muted small mt-2">
+                  Sau khi gửi, trạng thái ban đầu sẽ là <b>Chờ xác nhận</b>.
+                </div>
+
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer th:replace="sinhvien/layouts/footer::footer"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/assets/js/sinhvien.js}"></script>
+
+<!-- ✅ optional validate UI -->
+<script>
+  (() => {
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+</body>
+</html>

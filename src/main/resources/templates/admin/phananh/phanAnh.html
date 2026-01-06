@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="admin/layouts/header::header"></head>
 
@@ -49,7 +49,7 @@
                                     <th style="min-width:320px;">Tiêu đề</th>
                                     <th style="width:160px;">Người gửi</th>
                                     <th style="width:150px;">Loại</th>
-                                    <th style="width:150px;">Trạng thái</th>
+                                    <th style="width:210px;">Trạng thái</th>
                                     <th style="width:170px;">Tạo lúc</th>
                                     <th style="width:170px;">Cập nhật</th>
                                     <th style="width:260px;" class="text-end">Thao tác</th>
@@ -65,17 +65,7 @@
                                     <td>
                                         <div class="fw-semibold" th:text="${pa.tieuDe}">Tiêu đề</div>
 
-                                        <div class="text-muted small text-truncate" style="max-width: 520px;"
-                                             th:text="${pa.moTa}">
-                                            Mô tả...
-                                        </div>
-
-                                        <!-- địa chỉ nếu có -->
-                                        <div th:if="${pa.diaChiMoTa != null and pa.diaChiMoTa != ''}"
-                                             class="text-muted small mt-1">
-                                            <i class="fa-solid fa-location-dot me-1"></i>
-                                            <span th:text="${pa.diaChiMoTa}"></span>
-                                        </div>
+                                       
                                     </td>
 
                                     <!-- Người gửi -->
@@ -91,18 +81,38 @@
 
                                     <!-- Trạng thái (badge màu) -->
                                     <td>
-                                        <span th:if="${pa.trangThai == 'NEW'}" class="badge bg-primary">NEW</span>
-                                        <span th:if="${pa.trangThai == 'RECEIVED'}" class="badge bg-info text-dark">RECEIVED</span>
-                                        <span th:if="${pa.trangThai == 'IN_PROGRESS'}" class="badge bg-warning text-dark">IN_PROGRESS</span>
-                                        <span th:if="${pa.trangThai == 'RESOLVED'}" class="badge bg-success">RESOLVED</span>
-                                        <span th:if="${pa.trangThai == 'REJECTED'}" class="badge bg-danger">REJECTED</span>
-                                        <span th:if="${pa.trangThai == 'CLOSED'}" class="badge bg-dark">CLOSED</span>
+                                        <form th:action="@{/admin/PhanAnh/capNhatTrangThai/{id}(id=${pa.phanAnhId})}"
+                                              method="post">
+                                            <select class="form-select form-select-sm"
+                                                    name="trangThai"
+                                                    onchange="this.form.submit()">
+                                                <option th:value="CHO_XAC_NHAN"
+                                                        th:selected="${pa.trangThai} == 'CHO_XAC_NHAN'"
+                                                        >Chờ xác nhận
+                                                </option>
+                                                <option th:value="DA_XAC_NHAN"
+                                                        th:selected="${pa.trangThai} == 'DA_XAC_NHAN'"
+                                                        >Đã xác nhận
+                                                </option>
+                                                <option th:value="DANG_XU_LY"
+                                                        th:selected="${pa.trangThai} == 'DANG_XU_LY'"
+                                                        >Đang xử lý
+                                                </option>
+                                                <option th:value="DA_HOAN_THANH"
+                                                        th:selected="${pa.trangThai} == 'DA_HOAN_THANH'"
+                                                        >Đã hoàn thành
+                                                </option>
+                                                <option th:value="TU_CHOI"
+                                                        th:selected="${pa.trangThai} == 'TU_CHOI'"
+                                                        >Không xử lý
+                                                </option>
+                                                <option th:value="DONG"
+                                                        th:selected="${pa.trangThai} == 'DONG'"
+                                                        >Đóng
+                                                </option>
+                                            </select>
 
-                                        <!-- fallback -->
-                                        <span th:if="${pa.trangThai != 'NEW' and pa.trangThai != 'RECEIVED' and pa.trangThai != 'IN_PROGRESS'
-                                                and pa.trangThai != 'RESOLVED' and pa.trangThai != 'REJECTED' and pa.trangThai != 'CLOSED'}"
-                                              class="badge bg-light text-dark"
-                                              th:text="${pa.trangThai}">UNKNOWN</span>
+                                        </form>
                                     </td>
 
                                     <!-- thời gian -->
@@ -116,54 +126,11 @@
                                     <!-- thao tác -->
                                     <td class="text-end">
                                         <a class="btn btn-sm btn-outline-primary"
-                                           th:href="@{/admin/PhanAnh/xem/{id}(id=${pa.phanAnhId})}">
+                                           th:href="@{/PhanAnh/xem/{id}(id=${pa.phanAnhId})}">
                                             Xem
                                         </a>
-
-                                        <!-- Các nút đổi trạng thái (tùy role MANAGER) -->
-                                        <form class="d-inline"
-                                              th:action="@{/admin/PhanAnh/status/{id}(id=${pa.phanAnhId})}"
-                                              method="post"
-                                              onsubmit="return confirm('Đổi trạng thái nha?');">
-                                            <input type="hidden" name="keyword" th:value="${keyword}">
-                                            <input type="hidden" name="pageNo" th:value="${currentpage}">
-
-                                            <!-- NEW -> RECEIVED -->
-                                            <button th:if="${pa.trangThai == 'NEW'}"
-                                                    class="btn btn-sm btn-outline-info"
-                                                    type="submit" name="trangThai" value="RECEIVED">
-                                                Nhận
-                                            </button>
-
-                                            <!-- RECEIVED -> IN_PROGRESS -->
-                                            <button th:if="${pa.trangThai == 'RECEIVED'}"
-                                                    class="btn btn-sm btn-outline-warning"
-                                                    type="submit" name="trangThai" value="IN_PROGRESS">
-                                                Xử lý
-                                            </button>
-
-                                            <!-- IN_PROGRESS -> RESOLVED -->
-                                            <button th:if="${pa.trangThai == 'IN_PROGRESS'}"
-                                                    class="btn btn-sm btn-outline-success"
-                                                    type="submit" name="trangThai" value="RESOLVED">
-                                                Hoàn tất
-                                            </button>
-
-                                            <!-- RESOLVED -> CLOSED -->
-                                            <button th:if="${pa.trangThai == 'RESOLVED'}"
-                                                    class="btn btn-sm btn-outline-dark"
-                                                    type="submit" name="trangThai" value="CLOSED">
-                                                Đóng
-                                            </button>
-
-                                            <!-- NEW/RECEIVED/IN_PROGRESS -> REJECTED -->
-                                            <button th:if="${pa.trangThai == 'NEW' or pa.trangThai == 'RECEIVED' or pa.trangThai == 'IN_PROGRESS'}"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    type="submit" name="trangThai" value="REJECTED">
-                                                Từ chối
-                                            </button>
-                                        </form>
-
+                                        <a class="btn btn-sm btn-outline-warning" 
+                                        th:href="@{/admin/PhanAnh/sua/{id}(id=${pa.phanAnhId})}">Sửa</a>
                                         <!-- Xóa (nếu muốn) -->
                                         <form class="d-inline"
                                               th:action="@{/admin/PhanAnh/xoa/{id}(id=${pa.phanAnhId})}"

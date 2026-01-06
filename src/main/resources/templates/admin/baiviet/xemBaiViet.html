@@ -10,34 +10,177 @@
 
     <div id="layoutSidenav_content">
       <main>
-        <div class="container-fluid px-4 mt-5">
-          <div class="card shadow-sm">
-            <div class="card-header d-flex align-items-center justify-content-between">
-              <div>
-                <i class="fa-solid fa-table me-2"></i>
-                <span class="fw-semibold">Chi tiết bài viết</span>
-              </div>
+        <div class="container-fluid px-4 mt-4">
+
+          <!-- TOP BAR -->
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <div>
+              <div class="text-muted small">Chi tiết bài viết</div>
+              <h3 class="fw-semibold mb-0"
+                  th:text="${baiViet != null ? baiViet.tieuDe : 'Không tìm thấy bài viết'}">
+                Tiêu đề
+              </h3>
             </div>
 
-            <div class="card-body">
-              <!-- ✅ FORM XEM BÀI VIẾT -->
-              <div th:if="${baiViet == null}">
-              Không tìm thấy bài viết
-            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/BaiViet}">
+                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+              </a>
 
-            <div th:if="${baiViet != null}">
-              <h1 th:text="${baiViet.tieuDe}"></h1>
-              <div th:utext="${baiViet.noiDung}"></div>
-              
-            </div>
+              <a class="btn btn-sm btn-outline-primary"
+                 th:if="${baiViet != null}"
+                 th:href="@{/admin/BaiViet/sua/{id}(id=${baiViet.baiVietId})}">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+              </a>
 
-
-              <!-- ✅ BẢNG LIST (để sau, cậu add table vào đây) -->
-              <div class="table-responsive">
-                <!-- table here -->
-              </div>
+              <button class="btn btn-sm btn-outline-danger"
+                      th:if="${baiViet != null}"
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalXoaBaiViet">
+                <i class="fa-solid fa-trash me-1"></i> Xoá
+              </button>
             </div>
           </div>
+
+          <!-- EMPTY -->
+          <div class="alert alert-warning shadow-sm" th:if="${baiViet == null}">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+            Không tìm thấy bài viết.
+          </div>
+
+          <!-- CONTENT -->
+          <div class="row g-4" th:if="${baiViet != null}">
+
+            <!-- LEFT: NỘI DUNG -->
+            <div class="col-12 col-lg-8">
+              <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                  <div class="fw-semibold">
+                    <i class="fa-regular fa-file-lines me-1"></i> Nội dung
+                  </div>
+
+                  <span class="badge"
+                        th:classappend="${baiViet.ghim} ? ' text-bg-success' : ' text-bg-secondary'"
+                        th:text="${baiViet.ghim} ? 'Ghim' : 'Không ghim'">
+                    Ghim
+                  </span>
+                </div>
+
+                <div class="card-body">
+                  <div class="mb-2 text-muted small">
+                    <span class="me-3">
+                      <i class="fa-regular fa-user me-1"></i>
+                      <span th:text="${baiViet.tacGiaId != null ? baiViet.tacGiaId.tenDangNhap : '—'}">tác giả</span>
+                    </span>
+
+                    <span class="me-3">
+                      <i class="fa-regular fa-clock me-1"></i>
+                      Tạo:
+                      <span th:text="${baiViet.taoLuc != null ? #temporals.format(baiViet.taoLuc,'dd/MM/yyyy HH:mm') : '—'}">—</span>
+                    </span>
+
+                    <span>
+                      <i class="fa-regular fa-pen-to-square me-1"></i>
+                      Cập nhật:
+                      <span th:text="${baiViet.capNhatLuc != null ? #temporals.format(baiViet.capNhatLuc,'dd/MM/yyyy HH:mm') : '—'}">—</span>
+                    </span>
+                  </div>
+
+                  <hr>
+
+                  <!-- ✅ hiển thị HTML -->
+                  <div class="prose" th:utext="${baiViet.noiDung}">
+                    Nội dung...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: META -->
+            <div class="col-12 col-lg-4">
+
+              <!-- DANH MỤC -->
+              <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white">
+                  <div class="fw-semibold">
+                    <i class="fa-solid fa-list me-1"></i> Danh mục
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div class="d-flex flex-wrap gap-2"
+                       th:if="${baiViet.dsDanhMuc != null and !#sets.isEmpty(baiViet.dsDanhMuc)}">
+                    <span class="badge rounded-pill text-bg-light border"
+                          th:each="bvdm : ${baiViet.dsDanhMuc}"
+                          th:if="${bvdm.danhMuc != null}"
+                          th:text="${bvdm.danhMuc.tenDanhMuc}">
+                      Danh mục
+                    </span>
+                  </div>
+
+                  <div class="text-muted small"
+                       th:if="${baiViet.dsDanhMuc == null or #sets.isEmpty(baiViet.dsDanhMuc)}">
+                    Chưa có danh mục.
+                  </div>
+                </div>
+              </div>
+
+              <!-- TỆP ĐÍNH KÈM -->
+              <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                  <div class="fw-semibold">
+                    <i class="fa-solid fa-paperclip me-1"></i> Tệp đính kèm
+                  </div>
+                  <span class="text-muted small"
+                        th:text="${baiViet.dsTep != null ? baiViet.dsTep.size() : 0} + ' tệp'">0 tệp</span>
+                </div>
+
+                <div class="card-body">
+                  <div th:if="${baiViet.dsTep == null or #sets.isEmpty(baiViet.dsTep)}"
+                       class="text-muted small">
+                    Chưa có tệp đính kèm.
+                  </div>
+
+                  <div th:if="${baiViet.dsTep != null and !#sets.isEmpty(baiViet.dsTep)}"
+                       class="d-flex flex-column gap-2">
+
+                    <div class="border rounded-3 p-2"
+                         th:each="tep : ${baiViet.dsTep}">
+                      <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div class="d-flex align-items-start gap-2">
+                          <span class="badge text-bg-light border"
+                                th:text="${tep.loaiTep != null ? tep.loaiTep : 'FILE'}">
+                            FILE
+                          </span>
+
+                          <div>
+                            <div class="fw-semibold small text-truncate" style="max-width: 220px;"
+                                 th:text="${tep.tenTep}">
+                              ten tep
+                            </div>
+
+                            <a class="small text-decoration-none"
+                               th:href="@{${tep.duongDanUrl}}"
+                               target="_blank">
+                              Mở tệp
+                            </a>
+                          </div>
+                        </div>
+
+                        <span class="text-muted small"
+                              th:text="${tep.kichThuoc != null ? (tep.kichThuoc/1024) + ' KB' : ''}">
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </main>
 
@@ -45,8 +188,38 @@
     </div>
   </div>
 
+  <!-- MODAL XOÁ -->
+  <div class="modal fade" id="modalXoaBaiViet" tabindex="-1" aria-hidden="true"
+       th:if="${baiViet != null}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xoá bài viết?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          Bạn chắc chắn muốn xoá bài viết:
+          <div class="fw-semibold mt-1" th:text="${baiViet.tieuDe}">Tiêu đề</div>
+          <div class="text-muted small mt-2">Hành động này không thể hoàn tác.</div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+
+          <!-- tuỳ route xoá của m -->
+          <form th:action="@{/admin/BaiViet/xoa/{id}(id=${baiViet.baiVietId})}" method="post" class="m-0">
+            <button type="submit" class="btn btn-danger">
+              <i class="fa-solid fa-trash me-1"></i> Xoá
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS vendor -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script th:src="@{/assets/js/scripts.js}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "bai_viet_danh_muc")
 public class BaiVietDanhMuc {
+
     @EmbeddedId
-    private BaiVietDanhMucId baiVietDanhMucId;
+    private BaiVietDanhMucId baiVietDanhMucId = new BaiVietDanhMucId(); // ✅ đừng để null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("baiVietId")
@@ -17,38 +18,24 @@ public class BaiVietDanhMuc {
     @JoinColumn(name = "danh_muc_id")
     private DanhMucBaiViet danhMuc;
 
-    public BaiVietDanhMuc() {
-    }
+    public BaiVietDanhMuc() {}
 
-    public BaiVietDanhMuc(BaiVietDanhMucId id, BaiViet baiViet, DanhMucBaiViet danhMuc) {
-        this.baiVietDanhMucId = id;
+    public BaiVietDanhMuc(BaiViet baiViet, DanhMucBaiViet danhMuc) {
         this.baiViet = baiViet;
         this.danhMuc = danhMuc;
+        this.baiVietDanhMucId = new BaiVietDanhMucId(
+            baiViet.getBaiVietId(),
+            danhMuc.getDanhMucId()
+        ); // ✅ set đủ 2 key
     }
 
-    public BaiVietDanhMucId getId() {
-        return baiVietDanhMucId;
-    }
+    // getter/setter đầy đủ
+    public BaiVietDanhMucId getBaiVietDanhMucId() { return baiVietDanhMucId; }
+    public void setBaiVietDanhMucId(BaiVietDanhMucId id) { this.baiVietDanhMucId = id; }
 
-    public void setId(BaiVietDanhMucId id) {
-        this.baiVietDanhMucId = id;
-    }
+    public BaiViet getBaiViet() { return baiViet; }
+    public void setBaiViet(BaiViet baiViet) { this.baiViet = baiViet; }
 
-    public BaiViet getBaiViet() {
-        return baiViet;
-    }
-
-    public void setBaiViet(BaiViet baiViet) {
-        this.baiViet = baiViet;
-    }
-
-    public DanhMucBaiViet getDanhMuc() {
-        return danhMuc;
-    }
-
-    public void setDanhMuc(DanhMucBaiViet danhMuc) {
-        this.danhMuc = danhMuc;
-    }
-
-    
+    public DanhMucBaiViet getDanhMuc() { return danhMuc; }
+    public void setDanhMuc(DanhMucBaiViet danhMuc) { this.danhMuc = danhMuc; }
 }

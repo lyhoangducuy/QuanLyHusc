@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="sinhvien/layouts/header::header"></head>
+
+<body>
+<nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
+
+<main class="container px-4 px-lg-5 my-4">
+
+  <!-- Header -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h3 class="fw-semibold mb-0">Chat</h3>
+      <div class="text-muted small">
+        Bạn đang đăng nhập: <b th:text="${me.hoTen}"></b>
+      </div>
+    </div>
+    <span class="badge rounded-pill text-bg-light border">Messenger/Zalo mini</span>
+  </div>
+
+  <!-- Empty -->
+  <div class="alert alert-light border shadow-sm py-4 text-center"
+       th:if="${dsNguoi == null or #lists.isEmpty(dsNguoi)}">
+    <div class="fw-semibold mb-1">Không có ai để chat 😅</div>
+    <div class="text-muted small">Thử quay lại sau nha.</div>
+  </div>
+
+  <!-- List kiểu Zalo/Fb -->
+  <div class="chat-list"
+       th:if="${dsNguoi != null and !#lists.isEmpty(dsNguoi)}">
+
+    <a class="chat-item"
+       th:each="u : ${dsNguoi}"
+       th:href="@{/chat/direct/{id}(id=${u.nguoiDungId})}">
+
+      <!-- avatar -->
+      <div class="chat-ava"
+           th:text="${#strings.substring(u.hoTen,0,1)}">A</div>
+
+      <!-- info -->
+      <div class="chat-info">
+        <div class="chat-name" th:text="${u.hoTen}">Họ tên</div>
+        <div class="chat-sub">
+          <span th:if="${u.email != null}" th:text="${u.email}">email</span>
+          <span th:if="${u.email == null}">ID: <span th:text="${u.nguoiDungId}"></span></span>
+        </div>
+      </div>
+
+      <!-- action -->
+      <div class="chat-action">
+        <span class="chat-btn">Nhắn tin</span>
+      </div>
+
+    </a>
+
+  </div>
+
+</main>
+
+<footer th:replace="sinhvien/layouts/footer::footer"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/assets/js/sinhvien.js}"></script>
+
+<style>
+  .chat-list{
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  }
+
+  .chat-item{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 12px 14px;
+    text-decoration:none;
+    color: inherit;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    transition: background .15s ease;
+  }
+  .chat-item:last-child{ border-bottom: 0; }
+  .chat-item:hover{ background: rgba(13,110,253,.06); }
+
+  .chat-ava{
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: 900;
+    color: #0b255a;
+    background: #e8f2ff;
+    border: 1px solid rgba(60,130,255,.22);
+    flex: 0 0 44px;
+  }
+
+  .chat-info{
+    flex:1;
+    min-width: 0;
+  }
+
+  .chat-name{
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-sub{
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-action{
+    flex: 0 0 auto;
+  }
+
+  .chat-btn{
+    display:inline-block;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 12px;
+    background: #0d6efd;
+    color: #fff;
+  }
+</style>
+
+</body>
+</html>

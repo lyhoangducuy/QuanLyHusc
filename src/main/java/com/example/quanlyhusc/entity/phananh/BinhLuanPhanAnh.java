@@ -3,6 +3,8 @@ package com.example.quanlyhusc.entity.phananh;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.example.quanlyhusc.entity.NguoiDung;
 
@@ -31,4 +33,7 @@ public class BinhLuanPhanAnh {
 
     @Column(name = "tao_luc")
     private OffsetDateTime taoLuc = OffsetDateTime.now();
+
+    @OneToMany(mappedBy = "binhLuanPhanAnh", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TepDinhKemBinhLuan> tepDinhKemBinhLuans=new HashSet<>();
 }

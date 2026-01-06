@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+<nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+<div id="layoutSidenav">
+  <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4 mt-5">
+
+        <!-- ✅ TOOLBAR: Search + Add -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+
+          <form class="d-flex ms-auto" style="max-width: 520px; width: 100%;"
+                th:action="@{/admin/LoaiPhanAnh}" method="get">
+            <div class="input-group">
+              <input class="form-control" name="keyword" type="text"
+                     placeholder="Search for..."
+                     aria-label="Search for..."
+                     aria-describedby="btnNavbarSearch"
+                     th:value="${keyword}"/>
+              <button class="btn btn-primary" id="btnNavbarSearch" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+
+          <a class="btn btn-primary" href="/admin/LoaiPhanAnh/them">
+            <i class="fa-solid fa-plus me-1"></i> Thêm loại phản ánh
+          </a>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <div>
+              <i class="fa-solid fa-table me-2"></i>
+              <span class="fw-semibold">Danh sách loại phản ánh</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width:70px;">ID</th>
+                    <th style="min-width:320px;">Mã loại</th>
+                    <th style="width:160px;">Tên loại</th>
+                    <th style="width:260px;" class="text-end">Thao tác</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr th:each="lpa : ${dsLoaiPhanAnh}">
+                    <td class="fw-semibold" th:text="${lpa.loaiId}"></td>
+
+                    <td>
+                      <div class="fw-semibold" th:text="${lpa.maLoai}"></div>
+                    </td>
+
+                    <td>
+                      <div class="text-muted small text-truncate" style="max-width: 520px;"
+                           th:text="${lpa.tenLoai}">
+                        Mô tả...
+                      </div>
+                    </td>
+
+                    <td class="text-end">
+                      <a class="btn btn-sm btn-outline-warning" 
+                                        th:href="@{/admin/LoaiPhanAnh/sua/{id}(id=${lpa.loaiId})}">Sửa</a>
+                      <form class="d-inline"
+                            th:action="@{/admin/LoaiPhanAnh/xoa/{id}(id=${lpa.loaiId})}"
+                            method="post"
+                            onsubmit="return confirm('Xóa loại phản ánh này nha?');">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <tr th:if="${dsLoaiPhanAnh == null or #lists.isEmpty(dsLoaiPhanAnh)}">
+                    <td colspan="4" class="text-center text-muted py-4">Không có loại phản ánh nào.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- pagination -->
+              <ul class="pagination justify-content-center mt-4"
+                  th:if="${dsLoaiPhanAnh != null and !#lists.isEmpty(dsLoaiPhanAnh)}">
+                <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+                  <a class="page-link"
+                     th:href="@{/admin/LoaiPhanAnh(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+                </li>
+
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+                    th:classappend="${i == currentpage} ? 'active'">
+                  <a class="page-link"
+                     th:href="@{/admin/LoaiPhanAnh(pageNo=${i}, keyword=${keyword})}"
+                     th:text="${i}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+                  <a class="page-link"
+                     th:href="@{/admin/LoaiPhanAnh(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer th:replace="admin/layouts/footer::footer"></footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/assets/js/scripts.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -5,9 +5,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Trang chu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Phản ánh & giám sát</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Tài liệu ôn thi</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Chat voi quan ly</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/PhanAnh}">Phản ánh </a></li>
+                        <li class="nav-item"><a class="nav-link"  th:href="@{/chat}" >Chat </a></li>
                         <li class="nav-item" >
                             <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>

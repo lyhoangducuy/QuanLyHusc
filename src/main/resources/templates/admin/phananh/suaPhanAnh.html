@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+<nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+<div id="layoutSidenav">
+  <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4 mt-4">
+
+        <!-- TOP BAR -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <div class="text-muted small">Chỉnh sửa phản ánh</div>
+            <h3 class="fw-semibold mb-0" th:text="${phanAnh.tieuDe}">Tiêu đề</h3>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/PhanAnh}">
+              <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+            </a>
+
+            <button form="formSuaPhanAnh" type="submit" class="btn btn-sm btn-primary">
+              <i class="fa-solid fa-floppy-disk me-1"></i> Lưu
+            </button>
+          </div>
+        </div>
+
+        <form id="formSuaPhanAnh"
+              th:action="@{/admin/PhanAnh/sua/{id}(id=${phanAnh.phanAnhId})}"
+              method="post"
+              enctype="multipart/form-data"
+              class="needs-validation"
+              novalidate>
+
+          <div class="row g-4">
+
+            <!-- LEFT: THÔNG TIN -->
+            <div class="col-12 col-lg-8">
+              <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                  <div class="fw-semibold">
+                    <i class="fa-regular fa-file-lines me-1"></i> Thông tin phản ánh
+                  </div>
+                </div>
+
+                <div class="card-body">
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Tiêu đề</label>
+                    <input type="text"
+                           class="form-control"
+                           name="tieuDe"
+                           th:value="${phanAnh.tieuDe}"
+                           required>
+                    <div class="invalid-feedback">Vui lòng nhập tiêu đề.</div>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-semibold">Người gửi</label>
+                      <input type="text"
+                             class="form-control"
+                             th:value="${phanAnh.nguoiGui != null ? phanAnh.nguoiGui.hoTen : ''}"
+                             readonly>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-semibold">Loại</label>
+                      <input type="text"
+                             class="form-control"
+                             th:value="${phanAnh.loai != null ? phanAnh.loai.tenLoai : ''}"
+                             readonly>
+                    </div>
+                  </div>
+
+                  <div class="mt-3">
+                    <label class="form-label fw-semibold">Mô tả</label>
+                    <textarea class="form-control"
+                              name="moTa"
+                              rows="6"
+                              required
+                              th:text="${phanAnh.moTa}"></textarea>
+                    <div class="invalid-feedback">Vui lòng nhập mô tả.</div>
+                  </div>
+
+                  <div class="mt-3">
+                    <label class="form-label fw-semibold">Địa chỉ mô tả</label>
+                    <input type="text"
+                           class="form-control"
+                           name="diaChiMoTa"
+                           th:value="${phanAnh.diaChiMoTa}">
+                  </div>
+
+                  <hr class="my-4">
+
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-semibold">Tạo lúc</label>
+                      <input type="text"
+                             class="form-control"
+                             th:value="${phanAnh.taoLuc != null ? #temporals.format(phanAnh.taoLuc,'dd/MM/yyyy HH:mm') : ''}"
+                             readonly>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-semibold">Cập nhật lúc</label>
+                      <input type="text"
+                             class="form-control"
+                             th:value="${phanAnh.capNhatLuc != null ? #temporals.format(phanAnh.capNhatLuc,'dd/MM/yyyy HH:mm') : ''}"
+                             readonly>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: TRẠNG THÁI + FILE -->
+            <div class="col-12 col-lg-4">
+
+              <!-- TRẠNG THÁI -->
+              <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white">
+                  <div class="fw-semibold">
+                    <i class="fa-regular fa-circle-check me-1"></i> Trạng thái
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <!-- đổi input thành select cho chuẩn -->
+                  <label class="form-label fw-semibold">Trạng thái xử lý</label>
+                  <select class="form-select" name="trangThai" required>
+                    <option value="CHO_XAC_NHAN"
+                            th:selected="${phanAnh.trangThai.name() == 'CHO_XAC_NHAN'}">Chờ xác nhận</option>
+                    <option value="DANG_XU_LY"
+                            th:selected="${phanAnh.trangThai.name() == 'DANG_XU_LY'}">Đang xử lý</option>
+                    <option value="DA_XU_LY"
+                            th:selected="${phanAnh.trangThai.name() == 'DA_XU_LY'}">Đã xử lý</option>
+                    <option value="TU_CHOI"
+                            th:selected="${phanAnh.trangThai.name() == 'TU_CHOI'}">Từ chối</option>
+                  </select>
+                  <div class="invalid-feedback">Vui lòng chọn trạng thái.</div>
+
+                  <div class="form-text mt-2">
+                    Tip: trạng thái nên là enum để khỏi nhập sai chính tả.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FILE ĐÍNH KÈM -->
+              <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                  <div class="fw-semibold">
+                    <i class="fa-solid fa-paperclip me-1"></i> Tệp đính kèm
+                  </div>
+                  <span class="text-muted small"
+                        th:text="${phanAnh.tepDinhKem != null ? phanAnh.tepDinhKem.size() : 0} + ' tệp'">0 tệp</span>
+                </div>
+
+                <div class="card-body">
+
+                  <!-- Danh sách file hiện có -->
+                  <div th:if="${phanAnh.tepDinhKem == null or #sets.isEmpty(phanAnh.tepDinhKem)}"
+                       class="text-muted small">
+                    Chưa có tệp đính kèm.
+                  </div>
+
+                  <div th:if="${phanAnh.tepDinhKem != null and !#sets.isEmpty(phanAnh.tepDinhKem)}"
+                       class="d-flex flex-column gap-2">
+
+                    <div class="border rounded-3 p-2"
+                         th:each="tep : ${phanAnh.tepDinhKem}">
+                      <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div class="d-flex align-items-start gap-2">
+                          <span class="badge text-bg-light border"
+                                th:text="${tep.loaiTep}">FILE</span>
+
+                          <div>
+                            <div class="fw-semibold small text-truncate" style="max-width: 220px;"
+                                 th:text="${tep.tenTep}">ten tep</div>
+
+                            <a class="small text-decoration-none"
+                               th:href="@{${tep.duongDanUrl}}"
+                               target="_blank">
+                              Mở tệp
+                            </a>
+                          </div>
+                        </div>
+
+                        <!-- nếu m muốn xóa file cũ: gửi list tepId cần xóa -->
+                        <div class="form-check">
+                          <input class="form-check-input"
+                                 type="checkbox"
+                                 name="xoaTepIds"
+                                 th:value="${tep.tepId}"
+                                 id="xoaTep__[[${tep.tepId}]]">
+                          <label class="form-check-label small text-muted"
+                                 th:for="|xoaTep__${tep.tepId}|">
+                            Xóa
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-text">
+                      Tick “Xóa” rồi bấm Lưu để xóa tệp.
+                    </div>
+
+                  </div>
+
+                  <hr class="my-3">
+
+                  <!-- Upload thêm -->
+                  <label class="form-label fw-semibold">Thêm tệp mới</label>
+                  <input type="file" name="files" class="form-control" multiple>
+                  <div class="form-text">Chọn nhiều file (ảnh/video/tài liệu).</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </main>
+
+    <footer th:replace="admin/layouts/footer::footer"></footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/assets/js/scripts.js}"></script>
+
+<script>
+  (() => {
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+
+</body>
+</html>

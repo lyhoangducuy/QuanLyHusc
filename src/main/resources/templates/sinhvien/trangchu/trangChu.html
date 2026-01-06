@@ -87,7 +87,7 @@
 
       <!-- ✅ EMPTY STATE -->
       <div class="alert alert-light border shadow-sm py-4 text-center"
-          th:if="${dsBaiViet == null or dsBaiViet.totalElements == 0}">
+          th:if="${dsBaiViet == null or #lists.isEmpty(dsBaiViet)}">
         <div class="fw-semibold mb-1">Không có kết quả 😅</div>
         <div class="text-muted small">Thử từ khóa khác nha.</div>
       </div>
@@ -120,7 +120,7 @@
         </div>
         <!-- ✅ PAGINATION -->
         <ul class="pagination justify-content-center mt-4"
-            th:if="${dsBaiViet != null and dsBaiViet.totalPages > 1}">
+            th:if="${dsBaiViet != null and !#lists.isEmpty(dsBaiViet) }">
           <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
             <a class="page-link" th:href="@{/(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
           </li>

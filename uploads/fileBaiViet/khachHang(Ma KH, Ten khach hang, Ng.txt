@@ -1,6 +1,0 @@
-khachHang(Ma KH, Ten khach hang, Ngay sinh, Gioitinh, Ten nguoi giam ho, Email, So dien thoai)
-sanPham(Ma san pham, Ten san pham, Mo ta, Don gia, Don vi tinh, Loai san phan (Ve vao cong/ Do an - thuc uong/Dich vu to tuong/Dich vu ve tranh/Do choi), Nha cung cap, Do tuoi phu hop)
-hoaDon(Ma hoa don, Ma khach hang, Ten nhan vien phu trach, Khu vui choi, Ngay su dung, Thoi gian bat dau, Thoi gian ket thuc, Trang thai hoa don(Dang su dung/Hoan tat/Huy))
-quanLyChiTietHoaDon(Ma hoa don, Ma san pham, So luong, Thoi gian su dung dich vu)
-nhanVien(Ma nhan vien, Ten nhan vien,Ngay sinh, Gioi tinh, So dien thoai, Chuc vu(Quan ly/Nhan vien khu vui choi/Nhan vien phuc vu/Nhan vien huong dan ve-to tuong), Ca lam viec, Level(1-5))
-

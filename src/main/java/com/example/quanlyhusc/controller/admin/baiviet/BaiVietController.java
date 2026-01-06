@@ -1,6 +1,8 @@
 package com.example.quanlyhusc.controller.admin.baiviet;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.quanlyhusc.dto.baiviet.BaiVietDTO;
 import com.example.quanlyhusc.entity.baiviet.BaiViet;
 import com.example.quanlyhusc.service.baiviet.BaiVietService;
+import com.example.quanlyhusc.service.baiviet.BaiVietServiceImple;
 import com.example.quanlyhusc.service.baiviet.DanhMucBaiVietService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,13 +77,15 @@ public class BaiVietController {
     }
     @GetMapping("/sua/{id}")
     public String sua(@PathVariable Long id, Model model) {
-        BaiViet baiViet = baiVietService.findById(id);
+        BaiViet baiViet = baiVietService.findByBaiVietId(id);
         model.addAttribute("baiViet", baiViet);
+        model.addAttribute("dsDanhMuc", this.danhMucBaiVietService.findAll());
         return "admin/baiviet/suaBaiViet";
     }
     @PostMapping("/sua/{id}")
-    public String sua(@PathVariable Long id, @ModelAttribute("baiViet") BaiVietDTO dto) {
-        baiVietService.update(id, dto);
+    public String sua(@PathVariable Long id, @ModelAttribute("baiViet") BaiVietDTO dto,
+        @RequestParam("files") MultipartFile[] files,@RequestParam(required = false) List<Long> xoaTepIds) {
+        baiVietService.update(id, dto,files,xoaTepIds);
         return "redirect:/admin/BaiViet";
     }
 

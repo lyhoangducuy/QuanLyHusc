@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.quanlyhusc.entity.baiviet.BaiViet;
 import com.example.quanlyhusc.service.baiviet.BaiVietService;
+import com.example.quanlyhusc.service.baiviet.BaiVietServiceImple;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -23,14 +24,14 @@ public class SinhVienController {
         
         if (keyword != null && !keyword.isEmpty()) {
             Page<BaiViet> list=this.baiVietService.search(keyword,pageNo);
-            model.addAttribute("dsBaiViet",list);
+            model.addAttribute("dsBaiViet",list.getContent());
             model.addAttribute("totalpage",list.getTotalPages());
             model.addAttribute("currentpage",pageNo);
             model.addAttribute("baiVietGhim", null);
             model.addAttribute("keyword", keyword);
         } else {
             Page<BaiViet> list=this.baiVietService.getAll(pageNo);
-            model.addAttribute("dsBaiViet",list);
+            model.addAttribute("dsBaiViet",list.getContent());
             model.addAttribute("totalpage",list.getTotalPages());
             model.addAttribute("currentpage",pageNo);
             model.addAttribute("baiVietGhim",this.baiVietService.findByGhimIsTrue());

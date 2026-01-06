@@ -1,58 +1,67 @@
- <div id="layoutSidenav" th:fragment="sideBar">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="index.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Bai viet
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" th:href="@{/admin/BaiViet}">Bai viet</a>
-                                    <a class="nav-link" th:href="@{/admin/DanhMuc}">Danh muc bai viet</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts2">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Phan anh & giam sat
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas f  a-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" th:href="@{/admin/PhanAnh}">Phan anh</a>
-                                    <a class="nav-link" th:href="@{/admin/DanhMuc}">Danh muc bai viet</a>
-                                </nav>
-                            </div>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="login.html">Login</a>
-                                            <a class="nav-link" href="register.html">Register</a>
-                                            <a class="nav-link" href="password.html">Forgot Password</a>
-                                        </nav>
-                                    </div>
-                                   
-                                </nav>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    
-                </nav>
-            </div>
-            
-                
+<div id="layoutSidenav" th:fragment="sideBar">
+  <div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+      <div class="sb-sidenav-menu">
+        <div class="nav">
+
+          <div class="sb-sidenav-menu-heading">Core</div>
+          <a class="nav-link" th:href="@{/admin}">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Dashboard
+          </a>
+
+          <!-- ====== BÀI VIẾT ====== -->
+          <a class="nav-link collapsed" href="#"
+             data-bs-toggle="collapse" data-bs-target="#collapseBaiViet"
+             aria-expanded="false" aria-controls="collapseBaiViet">
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Bài viết
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+          </a>
+
+          <div class="collapse" id="collapseBaiViet" data-bs-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav">
+              <a class="nav-link" th:href="@{/admin/BaiViet}">Bài viết</a>
+              <a class="nav-link" th:href="@{/admin/DanhMuc}">Danh mục bài viết</a>
+            </nav>
+          </div>
+
+          <!-- ====== PHẢN ÁNH ====== -->
+          <a class="nav-link collapsed" href="#"
+             data-bs-toggle="collapse" data-bs-target="#collapsePhanAnh"
+             aria-expanded="false" aria-controls="collapsePhanAnh">
+            <div class="sb-nav-link-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            Phản ánh &amp; giám sát
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+          </a>
+
+          <div class="collapse" id="collapsePhanAnh" data-bs-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav">
+              <a class="nav-link" th:href="@{/admin/PhanAnh}">Phản ánh</a>
+              <a class="nav-link" th:href="@{/admin/LoaiPhanAnh}">Loại phản ánh</a>
+            </nav>
+          </div>
+
+          <!-- ====== TÀI LIỆU ====== -->
+          <a class="nav-link collapsed" href="#"
+             data-bs-toggle="collapse" data-bs-target="#collapseTaiLieu"
+             aria-expanded="false" aria-controls="collapseTaiLieu">
+            <div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>
+            Chat
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+          </a>
+
+          <div class="collapse" id="collapseTaiLieu" data-bs-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav">
+              <a class="nav-link" th:href="@{/admin/DanhMucTaiLieu}">Thư mục tài liệu</a>
+              <a class="nav-link" th:href="@{/admin/YeuCau}">Yeu cau dong gop</a>
+              <!-- sau này có list tài liệu thì mở ra -->
+              <!-- <a class="nav-link" th:href="@{/admin/TaiLieu}">Danh sách tài liệu</a> -->
+            </nav>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+  </div>
 </div>

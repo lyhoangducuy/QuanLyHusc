@@ -25,9 +25,12 @@ public class SpringSecutiryConfig {
         http.csrf(csrf->csrf.disable()).authorizeHttpRequests(auth->
             auth.requestMatchers("/**","/login").permitAll()
             .requestMatchers("/admin/**","/**").hasAnyAuthority("ADMIN")
+            .requestMatchers("/ws/**").permitAll()
+            
             .anyRequest().authenticated()).formLogin(login->login.loginPage("/login").loginProcessingUrl("/login")
             .usernameParameter("tenDangNhap").passwordParameter("matKhau").defaultSuccessUrl("/admin/",true))
-            .logout(logout->logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
+            .logout(logout->logout.logoutUrl("/logout").logoutSuccessUrl("/login"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/ws/**"));
         return http.build();
     }
     @Bean

@@ -23,6 +23,7 @@ CommandLineRunner seed(NguoiDungRepository repo, PasswordEncoder encoder) {
             u.setTrangThaiHoatDong(true);
             repo.save(u);
         }
+        
     };
 }
 

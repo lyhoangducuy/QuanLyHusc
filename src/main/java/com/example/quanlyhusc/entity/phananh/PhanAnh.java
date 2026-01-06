@@ -3,7 +3,10 @@ package com.example.quanlyhusc.entity.phananh;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.example.quanlyhusc.entity.NguoiDung;
 
@@ -49,11 +52,12 @@ public class PhanAnh {
 
     /* ========= RELATION ========= */
 
-    @OneToMany(mappedBy = "phanAnh", cascade = CascadeType.ALL)
-    private List<TepDinhKemPhanAnh> tepDinhKem;
+    @OneToMany(mappedBy = "phanAnh", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TepDinhKemPhanAnh> tepDinhKem=new HashSet<>();
 
-    @OneToMany(mappedBy = "phanAnh", cascade = CascadeType.ALL)
-    private List<BinhLuanPhanAnh> binhLuan;
+    @OneToMany(mappedBy = "phanAnh", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OrderBy("taoLuc DESC")
+    private Set<BinhLuanPhanAnh> binhLuans=new HashSet<>();
 
     @PreUpdate
     public void preUpdate() {

@@ -40,10 +40,16 @@ public interface BaiVietRepository extends JpaRepository<BaiViet,Long>{
         WHERE bv.tieuDe LIKE %:keyword%
     """)
     List<BaiViet> searchByTieuDe(String keyword);
+    
     @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc"})
     @Query("select bv from BaiViet bv")
     Page<BaiViet> getAllPage(Pageable pageable);
 
     @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc"})
     Page<BaiViet> findByTieuDeContainingIgnoreCase(String keyword, Pageable pageable);
+    @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc", "dsTep"})
+    BaiViet findByBaiVietId(Long id);
+    
+
+
 }

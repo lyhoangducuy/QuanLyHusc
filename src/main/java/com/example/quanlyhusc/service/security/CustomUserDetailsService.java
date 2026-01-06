@@ -22,18 +22,20 @@ public class CustomUserDetailsService implements UserDetailsService{
     @Autowired
     private NguoiDungService nguoiDungService;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        NguoiDung nguoiDung=nguoiDungService.findByTenDangNhap(username);
-        if (nguoiDung==null){
-            throw new UsernameNotFoundException("Ten nguoi dung khong ton tai");
-        }
-        Collection<GrantedAuthority> grantedAuthorities=new HashSet<>();
-        Set<NguoiDungVaiTro> nguoiDungVaiTros=nguoiDung.getNguoiDungVaiTro();
-        for (NguoiDungVaiTro n:nguoiDungVaiTros ){
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    NguoiDung nguoiDung = nguoiDungService.findByTenDangNhapFetchRole(username);
+    if (nguoiDung == null) throw new UsernameNotFoundException("User không tồn tại");
+
+    Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
+    Set<NguoiDungVaiTro> nguoiDungVaiTros = nguoiDung.getNguoiDungVaiTro();
+    if (nguoiDungVaiTros != null) {
+        for (NguoiDungVaiTro n : nguoiDungVaiTros) {
             grantedAuthorities.add(new SimpleGrantedAuthority(n.getVaiTro().getTenVaiTro()));
         }
-        return new CustomUserDetails(nguoiDung, grantedAuthorities);
     }
+    return new CustomUserDetails(nguoiDung, grantedAuthorities);
+}
+
     
     
 }
