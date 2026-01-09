@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+<nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+<div id="layoutSidenav">
+  <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4 mt-5">
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <h4 class="fw-semibold mb-0">Chi tiết người dùng</h4>
+            <div class="text-muted small" th:if="${u != null}">
+              ID: <b th:text="${u.nguoiDungId}">1</b>
+            </div>
+          </div>
+
+          <a class="btn btn-sm btn-outline-secondary"
+             th:href="@{/admin/NguoiDung(pageNo=${pageNo}, keyword=${keyword})}">
+            ← Quay lại
+          </a>
+        </div>
+
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+        <div class="card shadow-sm" th:if="${u != null}">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-semibold">
+              <i class="fa-solid fa-user me-2"></i>Thông tin người dùng
+            </span>
+
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-warning"
+                 th:href="@{/admin/NguoiDung/sua/{id}(id=${u.nguoiDungId})}">
+                Sửa
+              </a>
+
+              <form class="d-inline"
+                    th:action="@{/admin/NguoiDung/xoa/{id}(id=${u.nguoiDungId})}"
+                    method="post"
+                    onsubmit="return confirm('Xóa người dùng này nha?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <div class="text-muted small">Họ tên</div>
+                <div class="fw-semibold" th:text="${u.hoTen}">Nguyễn Văn A</div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Tên đăng nhập</div>
+                <div class="fw-semibold" th:text="${u.tenDangNhap}">admin</div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Email</div>
+                <div class="fw-semibold" th:text="${u.email}">a@gmail.com</div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Số điện thoại</div>
+                <div class="fw-semibold" th:text="${u.soDienThoai}">0909...</div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Trạng thái</div>
+                <span class="badge"
+                      th:classappend="${u.trangThaiHoatDong} ? ' bg-success' : ' bg-secondary'"
+                      th:text="${u.trangThaiHoatDong} ? 'Đang hoạt động' : 'Tạm khóa'">
+                  Đang hoạt động
+                </span>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Vai trò</div>
+                <div class="fw-semibold"
+                     th:text="${u.nguoiDungVaiTro != null ? #strings.listJoin(u.nguoiDungVaiTro.![vaiTro.maVaiTro], ', ') : ''}">
+                  ADMIN
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Tạo lúc</div>
+                <div class="fw-semibold"
+                     th:text="${#temporals.format(u.taoLuc, 'dd/MM/yyyy HH:mm')}">
+                  09/01/2026 00:00
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="text-muted small">Cập nhật lúc</div>
+                <div class="fw-semibold"
+                     th:text="${#temporals.format(u.capNhatLuc, 'dd/MM/yyyy HH:mm')}">
+                  09/01/2026 00:00
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer th:replace="admin/layouts/footer::footer"></footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/assets/js/scripts.js}"></script>
+</body>
+</html>

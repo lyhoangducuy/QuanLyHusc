@@ -14,24 +14,24 @@
                                         <form th:action="@{/login}" method="post">
                                             <div class="form-floating mb-3">
                                                 <input class="form-control" id="tenDangNhap" name="tenDangNhap" type="text" placeholder="Ten dang nhap" />
-                                                <label for="inputEmail">Email address</label>
+                                                <label for="inputEmail">Ten nguoi dung</label>
                                             </div>
                                             <div class="form-floating mb-3">
                                                 <input class="form-control" id="matKhau" type="password" name="matKhau" placeholder="Mat khau" />
-                                                <label for="inputPassword">Password</label>
+                                                <label for="inputPassword">Mat khau</label>
                                             </div>
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="small" href="password.html">Forgot Password?</a>
+                                                <a class="small" th:href="@{/quenMatKhau}">Forgot Password?</a>
                                                 <button class="btn btn-primary" type="submit">Login</button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="register.html">Need an account? Sign up!</a></div>
+                                        <div class="small"><a th:href="@{/dangKy}">Need an account? Sign up!</a></div>
                                     </div>
                                 </div>
                             </div>

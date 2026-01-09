@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="bg-primary">
+  <div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+      <main>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-5">
+
+              <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header">
+                  <h3 class="text-center font-weight-light my-4">Xác nhận email</h3>
+                </div>
+
+                <div class="card-body">
+
+                  <p class="text-muted small mb-3">
+                    Nhập mã OTP 6 số đã gửi tới email:
+                    <b th:text="${email}">email@example.com</b>
+                  </p>
+
+                  <!-- flash message -->
+                  <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+                  <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+                  <!-- Form verify OTP -->
+                  <form th:action="@{/xacNhan}" method="post">
+                    <input type="hidden" name="email" th:value="${email}"/>
+
+                    <div class="form-floating mb-3">
+                      <input class="form-control text-center fw-bold"
+                             id="otp"
+                             name="otp"
+                             type="text"
+                             inputmode="numeric"
+                             autocomplete="one-time-code"
+                             maxlength="6"
+                             pattern="[0-9]{6}"
+                             placeholder="OTP"
+                             required />
+                      <label for="otp">OTP (6 số)</label>
+                      <div class="form-text">
+                        OTP có hiệu lực 15 phút. Không thấy email thì kiểm tra Spam/Quảng cáo.
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                      <a class="small" th:href="@{/login}">Quay về đăng nhập</a>
+                      <button class="btn btn-primary" type="submit">Xác minh</button>
+                    </div>
+                  </form>
+
+                  <hr class="my-4"/>
+
+                  <!-- Resend OTP -->
+                  <form th:action="@{/xacNhan/gui-lai}" method="post">
+                    <input type="hidden" name="email" th:value="${email}"/>
+                    <button class="btn btn-outline-secondary w-100" type="submit">
+                      Gửi lại OTP
+                    </button>
+                  </form>
+
+                </div>
+
+                <div class="card-footer text-center py-3">
+                  <div class="small">
+                    <a th:href="@{/dangKy}">Chưa có tài khoản? Đăng ký</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="layoutAuthentication_footer">
+      <footer th:replace="admin/layouts/footer::footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script th:src="@{/assets/js/scripts.js}"></script>
+
+  <!-- Optional: chỉ cho nhập số -->
+  <script>
+    (function() {
+      const otp = document.getElementById('otp');
+      if (!otp) return;
+      otp.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(0, 6);
+      });
+    })();
+  </script>
+</body>
+</html>

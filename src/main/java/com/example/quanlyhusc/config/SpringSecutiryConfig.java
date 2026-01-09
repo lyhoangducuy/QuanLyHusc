@@ -16,10 +16,7 @@ import com.example.quanlyhusc.service.security.CustomUserDetailsService;
 public class SpringSecutiryConfig {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-    @Bean
-    BCryptPasswordEncoder bCryptPasswordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+   
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
         http.csrf(csrf->csrf.disable()).authorizeHttpRequests(auth->

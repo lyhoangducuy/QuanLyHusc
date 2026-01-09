@@ -20,16 +20,19 @@ public class NguoiDungVaiTro {
     private VaiTro vaiTro;
 
     
-    public NguoiDungVaiTro() {
-    }
+   
 
-    public NguoiDungVaiTro(NguoiDung nguoiDung, VaiTro vaiTro) {
-        this.nguoiDung = nguoiDung;
-        this.vaiTro = vaiTro;
+    public NguoiDungVaiTro() {
     }
 
     public NguoiDung getNguoiDung() {
         return nguoiDung;
+    }
+
+    public NguoiDungVaiTro(NguoiDungVaiTroId id, NguoiDung nguoiDung, VaiTro vaiTro) {
+        this.id = id;
+        this.nguoiDung = nguoiDung;
+        this.vaiTro = vaiTro;
     }
 
     public void setNguoiDung(NguoiDung nguoiDung) {
@@ -42,6 +45,14 @@ public class NguoiDungVaiTro {
 
     public void setVaiTro(VaiTro vaiTro) {
         this.vaiTro = vaiTro;
+    }
+
+    public NguoiDungVaiTroId getId() {
+        return id;
+    }
+
+    public void setId(NguoiDungVaiTroId id) {
+        this.id = id;
     }
     
 }

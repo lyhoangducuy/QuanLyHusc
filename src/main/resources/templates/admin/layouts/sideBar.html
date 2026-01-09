@@ -42,23 +42,13 @@
             </nav>
           </div>
 
-          <!-- ====== TÀI LIỆU ====== -->
-          <a class="nav-link collapsed" href="#"
-             data-bs-toggle="collapse" data-bs-target="#collapseTaiLieu"
-             aria-expanded="false" aria-controls="collapseTaiLieu">
-            <div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>
-            Chat
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
 
-          <div class="collapse" id="collapseTaiLieu" data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav">
-              <a class="nav-link" th:href="@{/admin/DanhMucTaiLieu}">Thư mục tài liệu</a>
-              <a class="nav-link" th:href="@{/admin/YeuCau}">Yeu cau dong gop</a>
-              <!-- sau này có list tài liệu thì mở ra -->
-              <!-- <a class="nav-link" th:href="@{/admin/TaiLieu}">Danh sách tài liệu</a> -->
-            </nav>
-          </div>
+          <a class="nav-link" th:href="@{/admin/NguoiDung}">
+  <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+  Người dùng
+</a>
+
+         
 
         </div>
       </div>

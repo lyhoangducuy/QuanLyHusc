@@ -1,5 +1,6 @@
 package com.example.quanlyhusc.repository.chat;
 
+import com.example.quanlyhusc.entity.NguoiDung;
 import com.example.quanlyhusc.entity.chat.CuocTroChuyen;
 
 import java.util.List;
@@ -24,5 +25,20 @@ order by c.taoLuc desc
 """)
 List<CuocTroChuyen> timDirectGiuaHaiNguoi(@Param("a") Long a, @Param("b") Long b,Pageable pageable);
 
+@Query("""
+select distinct tv.nguoiDung
+from ThanhVienTroChuyen tv
+where tv.cuocTroChuyen in (
+  select c
+  from CuocTroChuyen c
+  where exists (
+    select 1 from ThanhVienTroChuyen tv2
+    where tv2.cuocTroChuyen = c
+      and tv2.nguoiDung.nguoiDungId = :a
+  )
+)
+and tv.nguoiDung.nguoiDungId <> :a
+""")
+List<NguoiDung> timDanhSachNguoiDaCoCuocTroChuyenVoiA(@Param("a") Long a);
 
 }

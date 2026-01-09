@@ -3,8 +3,10 @@ package com.example.quanlyhusc.service.chat;
 import com.example.quanlyhusc.dto.chat.TinNhanDto;
 import com.example.quanlyhusc.dto.chat.YeuCauGuiTinNhan;
 import com.example.quanlyhusc.entity.NguoiDung;
+import com.example.quanlyhusc.entity.VaiTro;
 import com.example.quanlyhusc.entity.chat.*;
 import com.example.quanlyhusc.repository.NguoiDungRepository;
+import com.example.quanlyhusc.repository.VaiTroRepository;
 import com.example.quanlyhusc.repository.chat.*;
 import jakarta.transaction.Transactional;
 
@@ -17,6 +19,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ChatService {
@@ -30,6 +33,8 @@ public class ChatService {
     private  TinNhanRepository tinNhanRepo;
     @Autowired
     private  DaDocTinNhanRepository daDocRepo;
+    @Autowired
+    private VaiTroRepository vaiTroRepository;
 
 
 
@@ -102,6 +107,13 @@ public class ChatService {
     }
   }
    public List<NguoiDung> layDanhSachNguoiDeChat(Authentication auth, NguoiDung me) {
+        Set<VaiTro> dsvt=this.vaiTroRepository.findByNguoiDungVaiTro(me.getNguoiDungVaiTro());
+        for (VaiTro vaiTro : dsvt) {
+           if (vaiTro.getMaVaiTro().equals("ADMIN")){
+          return this.cuocTroChuyenRepository.timDanhSachNguoiDaCoCuocTroChuyenVoiA(me.getNguoiDungId());
+        }
+        }
+        
         List<NguoiDung> ds=new ArrayList<>();
         ds=this.nguoiDungRepository.findAllByMaVaiTro("ADMIN");
         return ds;
@@ -118,7 +130,7 @@ public class ChatService {
     }
 
     @Transactional
-public Long taoMoiDirect(Long meId, Long otherId) {
+    public Long taoMoiDirect(Long meId, Long otherId) {
 
     // đảm bảo 2 user tồn tại (không tồn tại thì throw luôn cho sạch)
     NguoiDung me = nguoiDungRepository.findById(meId)
@@ -148,7 +160,7 @@ public Long taoMoiDirect(Long meId, Long otherId) {
     thanhVienTroChuyenRepository.save(tv2);
 
     return c.getCuocTroChuyenId();
-}
+    }
 
     public List<TinNhan> layLichSu(Long cuocId, Long meId) {
         kiemTraThanhVien(cuocId, meId);

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+  <nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+  <div id="layoutSidenav">
+    <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+    <div id="layoutSidenav_content">
+      <main>
+        <div class="container-fluid px-4 mt-5">
+
+          <!-- Search -->
+          <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" method="get"
+            th:action="@{/admin/NguoiDung}">
+            <div class="input-group">
+              <input class="form-control" name="keyword" type="text" placeholder="Search for..."
+                aria-label="Search for..." aria-describedby="btnNavbarSearch" th:value="${keyword}" />
+              <button class="btn btn-primary" id="btnNavbarSearch" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="card shadow-sm mt-3">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div>
+                <i class="fa-solid fa-table me-2"></i>
+                <span class="fw-semibold">Người dùng</span>
+              </div>
+
+              <a class="btn btn-sm btn-primary" th:href="@{/admin/NguoiDung/them}">
+                <i class="fa-solid fa-plus me-1"></i> Thêm người dùng
+              </a>
+            </div>
+
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width:70px;">ID</th>
+                      <th style="min-width:220px;">Họ tên</th>
+                      <th style="min-width:240px;">Email</th>
+                      <th style="min-width:180px;">Tên đăng nhập</th>
+                      <th style="min-width:180px;">Ngày tạo</th>
+                      <th style="min-width:160px;">Vai trò</th>
+                      <th class="text-end" style="width:220px;">Hành động</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr th:each="u : ${dsNguoiDung}">
+                      <td class="fw-semibold" th:text="${u.nguoiDungId}">1</td>
+                      <td th:text="${u.hoTen}">Nguyễn Văn A</td>
+                      <td th:text="${u.email}">a@gmail.com</td>
+                      <td th:text="${u.tenDangNhap}">admin</td>
+                      <td th:text="${#temporals.format(u.taoLuc, 'dd/MM/yyyy HH:mm')}">09/01/2026 00:00</td>
+
+                      <td>
+                        <span th:text="${#strings.listJoin(u.nguoiDungVaiTro.![vaiTro.maVaiTro], ', ')}">ADMIN</span>
+                      </td>
+
+                      <!-- Actions -->
+                      <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                          th:href="@{/admin/NguoiDung/xem/{id}(id=${u.nguoiDungId}, pageNo=${currentpage}, keyword=${keyword})}">
+                          Xem
+                        </a>
+
+
+                        <a class="btn btn-sm btn-outline-warning ms-1"
+                          th:href="@{/admin/NguoiDung/sua/{id}(id=${u.nguoiDungId}, pageNo=${currentpage}, keyword=${keyword})}">
+                          Sửa
+                        </a>
+
+
+                        <form class="d-inline ms-1"
+                          th:action="@{/admin/NguoiDung/xoa/{id}(id=${u.nguoiDungId}, pageNo=${currentpage}, keyword=${keyword})}"
+                          method="post" onsubmit="return confirm('Xóa người dùng này nha?');">
+                          <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+                        </form>
+
+                      </td>
+                    </tr>
+
+                    <tr th:if="${dsNguoiDung == null or #lists.isEmpty(dsNguoiDung)}">
+                      <td colspan="7" class="text-center text-muted py-4">Không có người dùng.</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-center mt-4" th:if="${totalpage != null }">
+                  <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/NguoiDung(pageNo=${currentpage - 1}, keyword=${keyword})}">
+                      Previous
+                    </a>
+                  </li>
+
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+                    th:classappend="${i == currentpage} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/NguoiDung(pageNo=${i}, keyword=${keyword})}" th:text="${i}">
+                      1
+                    </a>
+                  </li>
+
+                  <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/NguoiDung(pageNo=${currentpage + 1}, keyword=${keyword})}">
+                      Next
+                    </a>
+                  </li>
+                </ul>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer th:replace="admin/layouts/footer::footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script th:src="@{/assets/js/scripts.js}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
