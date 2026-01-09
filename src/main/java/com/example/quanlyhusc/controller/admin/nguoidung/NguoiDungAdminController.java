@@ -79,7 +79,7 @@ public class NguoiDungAdminController {
     }
 
     @PostMapping("/xoa/{id}")
-    public String xoa(@org.springframework.web.bind.annotation.PathVariable("id") Long id,
+    public String xoa(@PathVariable("id") Long id,
             @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
             @RequestParam(name = "keyword", required = false) String keyword) {
 

@@ -26,7 +26,33 @@
               </a>
             </div>
 
-            <h1 class="fw-bold mb-3" th:text="${phanAnh.tieuDe}">Tiêu đề phản ánh</h1>
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+  <h1 class="fw-bold mb-0"
+      th:text="${phanAnh.tieuDe}">
+    Tiêu đề phản ánh
+  </h1>
+
+  <!-- ✅ Badge trạng thái nằm bên tiêu đề -->
+  <span class="badge rounded-pill"
+        th:classappend="${
+          phanAnh.trangThai.name() == 'CHO_XAC_NHAN' ? ' text-bg-secondary' :
+          phanAnh.trangThai.name() == 'DA_XAC_NHAN' ? ' text-bg-primary' :
+          phanAnh.trangThai.name() == 'DANG_XU_LY' ? ' text-bg-warning text-dark' :
+          phanAnh.trangThai.name() == 'DA_HOAN_THANH' ? ' text-bg-success' :
+          phanAnh.trangThai.name() == 'TU_CHOI' ? ' text-bg-danger' :
+          ' text-bg-dark'
+        }"
+        th:text="${
+          phanAnh.trangThai.name() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+          phanAnh.trangThai.name() == 'DA_XAC_NHAN' ? 'Đã xác nhận' :
+          phanAnh.trangThai.name() == 'DANG_XU_LY' ? 'Đang xử lý' :
+          phanAnh.trangThai.name() == 'DA_HOAN_THANH' ? 'Đã hoàn thành' :
+          phanAnh.trangThai.name() == 'TU_CHOI' ? 'Không xử lý' :
+          'Đóng'
+        }">
+  </span>
+</div>
+
 
             <!-- Meta -->
             <div class="d-flex flex-wrap gap-2 mb-4">
@@ -35,10 +61,6 @@
                 <span th:text="${phanAnh.loai != null ? phanAnh.loai.tenLoai : '—'}">Loại</span>
               </span>
 
-              <span class="badge rounded-pill text-bg-light border">
-                <i class="fa-regular fa-circle-check me-1"></i>
-                <span th:text="${phanAnh.trangThai}">Trạng thái</span>
-              </span>
               <span class="badge rounded-pill text-bg-light border"
                     th:if="${phanAnh.diaChiMoTa != null and !#strings.isEmpty(phanAnh.diaChiMoTa)}">
                 <i class="fa-solid fa-location-dot me-1"></i>

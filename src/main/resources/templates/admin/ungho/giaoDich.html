@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+<nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+<div id="layoutSidenav">
+  <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4 mt-4">
+
+        <!-- Header / Breadcrumb / Actions -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
+          <div class="min-w-0">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <h4 class="fw-bold mb-0">
+                <i class="fa-solid fa-receipt me-2"></i>Giao dịch ủng hộ
+              </h4>
+
+              <span class="badge bg-light text-dark border" th:if="${campaign != null}">
+                ID: <b th:text="${campaign.ungHoId}">0</b>
+              </span>
+            </div>
+
+            <div class="text-muted small mt-1" th:if="${campaign != null}">
+              Chiến dịch: <b th:text="${campaign.tieuDe}">---</b>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/UngHo}">
+              <i class="fa-solid fa-arrow-left me-1"></i>Quay lại
+            </a>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="alert alert-danger d-flex align-items-center gap-2"
+             th:if="${error}">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div th:text="${error}">Có lỗi xảy ra.</div>
+        </div>
+
+        <div th:if="${campaign != null}">
+
+          <!-- Stats -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4">
+              <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                      <div class="text-muted small">Tổng nhận</div>
+                      <div class="fw-bold fs-4 mt-1"
+                           th:text="${#numbers.formatDecimal(sumSuccess,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</div>
+                    </div>
+                    <div class="rounded-circle bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;">
+                      <i class="fa-solid fa-sack-dollar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                      <div class="text-muted small">Số giao dịch SUCCESS</div>
+                      <div class="fw-bold fs-4 mt-1" th:text="${countSuccess}">0</div>
+                    </div>
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;">
+                      <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                      <div class="text-muted small">Số giao dịch PENDING</div>
+                      <div class="fw-bold fs-4 mt-1" th:text="${countPending}">0</div>
+                    </div>
+                    <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;">
+                      <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter -->
+          <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body">
+              <form method="get" th:action="@{/admin/UngHo/{id}/giao-dich(id=${campaign.ungHoId})}">
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label mb-1 small text-muted">Trạng thái</label>
+                    <select class="form-select" name="trangThai">
+                      <option value="ALL" th:selected="${trangThai == 'ALL'}">Tất cả</option>
+                      <option value="SUCCESS" th:selected="${trangThai == 'SUCCESS'}">SUCCESS</option>
+                      <option value="PENDING" th:selected="${trangThai == 'PENDING'}">PENDING</option>
+                      <option value="FAILED" th:selected="${trangThai == 'FAILED'}">FAILED</option>
+                      <option value="CANCELLED" th:selected="${trangThai == 'CANCELLED'}">CANCELLED</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 col-md-3 d-grid">
+                    <button class="btn btn-primary" type="submit">
+                      <i class="fa-solid fa-filter me-1"></i>Lọc
+                    </button>
+                  </div>
+
+                  <div class="col-12 col-md-5">
+                   
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                <div class="fw-semibold">
+                  Danh sách giao dịch
+                  <span class="text-muted fw-normal" th:if="${trangThai != null}">
+                    (lọc: <b th:text="${trangThai}">ALL</b>)
+                  </span>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                    <tr>
+                      <th style="width:90px;">GD</th>
+                      <th style="min-width:180px;">Mã đơn</th>
+                      <th style="min-width:140px;" class="text-end">Số tiền</th>
+                      <th style="min-width:130px;">Trạng thái</th>
+                      <th style="min-width:170px;">Thời gian</th>
+                      <th style="min-width:120px;">Bank</th>
+                      <th style="min-width:120px;">Resp</th>
+                      <th style="min-width:180px;">Nguoi dung</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr th:each="g : ${dsGiaoDich}">
+                      <td class="fw-semibold text-nowrap" th:text="${g.gdId}">1</td>
+
+                      <td class="min-w-0">
+                        <div class="fw-semibold text-truncate" style="max-width: 320px;"
+                             th:text="${g.maDonHang}">UH...</div>
+                        <div class="text-muted small text-truncate" style="max-width: 320px;"
+                             th:text="${g.vnpTxnRef}">vnpTxnRef</div>
+                      </td>
+
+                      <td class="text-end text-nowrap"
+                          th:text="${#numbers.formatDecimal(g.soTienVnd,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</td>
+
+                      <td class="text-nowrap">
+                        <span class="badge rounded-pill"
+                              th:classappend="${g.trangThai == 'SUCCESS'} ? ' bg-success'
+                                : (${g.trangThai == 'PENDING'} ? ' bg-warning text-dark'
+                                : (${g.trangThai == 'FAILED'} ? ' bg-danger' : ' bg-secondary'))"
+                              th:text="${g.trangThai}">
+                          PENDING
+                        </span>
+                      </td>
+
+                      <td class="text-nowrap"
+                          th:text="${g.taoLuc != null ? #temporals.format(g.taoLuc,'dd/MM/yyyy HH:mm') : ''}">
+                        09/01/2026 10:10
+                      </td>
+
+                      <td class="text-nowrap" th:text="${g.vnpBankCode}">NCB</td>
+                      <td class="text-nowrap" th:text="${g.vnpResponseCode}">00</td>
+                      <td class="text-nowrap" th:text="${g.nguoiDungId}">...</td>
+
+                    </tr>
+
+                    <tr th:if="${dsGiaoDich == null or #lists.isEmpty(dsGiaoDich)}">
+                      <td colspan="8" class="text-center text-muted py-5">
+                        <i class="fa-regular fa-face-smile me-1"></i>Chưa có giao dịch.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div class="d-flex justify-content-center mt-4"
+                   th:if="${totalpage != null and totalpage > 1}">
+                <nav aria-label="Pagination">
+                  <ul class="pagination mb-0">
+                    <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+                      <a class="page-link"
+                         th:href="@{/admin/UngHo/{id}/giao-dich(id=${campaign.ungHoId}, pageNo=${currentpage-1}, trangThai=${trangThai})}">
+                        <i class="fa-solid fa-chevron-left me-1"></i>Previous
+                      </a>
+                    </li>
+
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(1,totalpage)}"
+                        th:classappend="${i == currentpage} ? 'active'">
+                      <a class="page-link"
+                         th:href="@{/admin/UngHo/{id}/giao-dich(id=${campaign.ungHoId}, pageNo=${i}, trangThai=${trangThai})}"
+                         th:text="${i}">1</a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+                      <a class="page-link"
+                         th:href="@{/admin/UngHo/{id}/giao-dich(id=${campaign.ungHoId}, pageNo=${currentpage+1}, trangThai=${trangThai})}">
+                        Next<i class="fa-solid fa-chevron-right ms-1"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <footer th:replace="admin/layouts/footer::footer"></footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/assets/js/scripts.js}"></script>
+</body>
+</html>

@@ -30,7 +30,7 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
     Set<NguoiDungVaiTro> nguoiDungVaiTros = nguoiDung.getNguoiDungVaiTro();
     if (nguoiDungVaiTros != null) {
         for (NguoiDungVaiTro n : nguoiDungVaiTros) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(n.getVaiTro().getTenVaiTro()));
+            grantedAuthorities.add(new SimpleGrantedAuthority(n.getVaiTro().getMaVaiTro()));
         }
     }
     return new CustomUserDetails(nguoiDung, grantedAuthorities);

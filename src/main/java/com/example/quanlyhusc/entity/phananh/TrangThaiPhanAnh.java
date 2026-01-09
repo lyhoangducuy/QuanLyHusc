@@ -6,5 +6,5 @@ public enum TrangThaiPhanAnh {
     DANG_XU_LY,
     DA_HOAN_THANH,
     TU_CHOI,
-    DONG
+    
 }

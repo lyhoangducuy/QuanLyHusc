@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head th:replace="sinhvien/layouts/header::header"></head>
-<body>
+
+<body class="d-flex flex-column min-vh-100">
+
   <!-- Responsive navbar-->
   <nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
 
@@ -14,11 +17,8 @@
         <div class="col-12 col-md-9">
           <div class="input-group">
             <span class="input-group-text">🔎</span>
-            <input class="form-control"
-                   type="text"
-                   name="keyword"
-                   placeholder="Tìm theo tiêu đề bài viết..."
-                   th:value="${keyword}">
+            <input class="form-control" type="text" name="keyword" placeholder="Tìm theo tiêu đề bài viết..."
+              th:value="${keyword}">
           </div>
         </div>
 
@@ -28,46 +28,49 @@
       </form>
     </section>
 
-    <!-- HERO / BÀI GHIM -->
-    <section class="my-5"
-             th:if="${baiVietGhim != null and (keyword == null or #strings.isEmpty(keyword))}">
-      <div class="card border-0 shadow-sm overflow-hidden">
-        <div class="row g-0 align-items-stretch">
-          <div class="col-lg-7">
-            <img class="img-fluid w-100 h-100 object-fit-cover"
-                 style="min-height: 260px;"
-                 src="https://dummyimage.com/1200x700/dee2e6/6c757d.jpg"
-                 alt="Ảnh minh họa" />
+   <!-- HERO / DS BÀI GHIM (card grid) -->
+<section class="my-5"
+         th:if="${dsBaiVietGhim != null and !#lists.isEmpty(dsBaiVietGhim)
+                 and (keyword == null or #strings.isEmpty(#strings.trim(keyword)))}">
+
+  <div class="d-flex align-items-end justify-content-between mb-3">
+    <div>
+      <h3 class="fw-semibold mb-0">Bài viết ghim</h3>
+      <div class="text-muted small">Nội dung quan trọng được ghim lên đầu</div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4" th:each="bv : ${dsBaiVietGhim}">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge text-bg-primary">Ghim</span>
+            <span class="small text-muted" th:text="${bv.taoLuc != null ? #temporals.format(bv.taoLuc,'dd/MM/yyyy HH:mm') : ''}"></span>
           </div>
 
-          <div class="col-lg-5">
-            <div class="card-body p-4 p-lg-5">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge text-bg-primary">Bài viết ghim</span>
-                <span class="text-muted small">Cập nhật mới</span>
-              </div>
+          <h5 class="card-title fw-bold mb-2"
+              style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+              th:text="${bv.tieuDe}">
+          </h5>
 
-              <h1 class="fw-bold mb-3" th:text="${baiVietGhim.tieuDe}"></h1>
+          <p class="card-text text-muted mb-3"
+             style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
+             th:text="${bv.noiDung}">
+          </p>
 
-              <p class="text-muted mb-4"
-                 style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;"
-                 th:text="${baiVietGhim.noiDung}">
-              </p>
-
-              <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-primary px-4"
-                   th:href="@{/BaiViet/{id}(id=${baiVietGhim.baiVietId})}">
-                  Xem chi tiết
-                </a>
-                <a class="btn btn-outline-secondary px-4" href="#dsBaiViet">
-                  Xem tất cả
-                </a>
-              </div>
-            </div>
-          </div>
+          <a class="btn btn-sm btn-outline-primary"
+             th:href="@{/BaiViet/{id}(id=${bv.baiVietId})}">
+            Xem chi tiết
+          </a>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+
+
 
     <!-- DANH SÁCH BÀI VIẾT -->
     <section id="dsBaiViet" class="mb-5">
@@ -87,7 +90,7 @@
 
       <!-- ✅ EMPTY STATE -->
       <div class="alert alert-light border shadow-sm py-4 text-center"
-          th:if="${dsBaiViet == null or #lists.isEmpty(dsBaiViet)}">
+        th:if="${dsBaiViet == null or #lists.isEmpty(dsBaiViet)}">
         <div class="fw-semibold mb-1">Không có kết quả 😅</div>
         <div class="text-muted small">Thử từ khóa khác nha.</div>
       </div>
@@ -99,19 +102,18 @@
           <div class="card h-100 border-0 shadow-sm">
             <div class="card-body p-4">
               <h5 class="card-title fw-bold mb-2"
-                  style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
-                  th:text="${baiViet.tieuDe}">
+                style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+                th:text="${baiViet.tieuDe}">
               </h5>
 
               <p class="card-text text-muted mb-3"
-                 style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
-                 th:text="${baiViet.noiDung}">
+                style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
+                th:text="${baiViet.noiDung}">
               </p>
 
               <div class="d-flex align-items-center justify-content-between">
-                <span class="small text-muted" th:text="${baiViet.taoLuc}"></span>
-                <a class="btn btn-sm btn-outline-primary"
-                   th:href="@{/BaiViet/{id}(id=${baiViet.baiVietId})}">
+                <span class="small text-muted" th:text="${baiViet.taoLuc != null ? #temporals.format(baiViet.taoLuc,'dd/MM/yyyy HH:mm') : ''}"></span>
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/BaiViet/{id}(id=${baiViet.baiVietId})}">
                   Xem chi tiết
                 </a>
               </div>
@@ -119,14 +121,13 @@
           </div>
         </div>
         <!-- ✅ PAGINATION -->
-        <ul class="pagination justify-content-center mt-4"
-            th:if="${dsBaiViet != null and !#lists.isEmpty(dsBaiViet) }">
+        <ul class="pagination justify-content-center mt-4" th:if="${dsBaiViet != null and !#lists.isEmpty(dsBaiViet) }">
           <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
             <a class="page-link" th:href="@{/(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
           </li>
 
           <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
-              th:classappend="${i == currentpage} ? 'active'">
+            th:classappend="${i == currentpage} ? 'active'">
             <a class="page-link" th:href="@{/(pageNo=${i}, keyword=${keyword})}" th:text="${i}">1</a>
           </li>
 
@@ -135,9 +136,9 @@
           </li>
         </ul>
 
-        
+
       </div>
-      
+
     </section>
 
   </main>
@@ -149,4 +150,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script th:src="@{/assets/js/sinhvien.js}"></script>
 </body>
+
 </html>

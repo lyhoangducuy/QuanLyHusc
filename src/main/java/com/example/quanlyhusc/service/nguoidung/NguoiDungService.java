@@ -41,4 +41,7 @@ public interface NguoiDungService {
     void guiLinkQuenMatKhau(String email, String baseUrl);
 
     void datLaiMatKhau(String token, String matKhauMoi, String matKhauNhapLai);
+    void updateProfile(Long nguoiDungId,String tenDangNhap, String hoTen,String email,String soDienThoai);
+    Long dem();
+    long demNguoiDungTuanTruoc(int soTuanTruoc) ;
 }

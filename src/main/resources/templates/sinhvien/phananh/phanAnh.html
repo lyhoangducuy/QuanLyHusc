@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head th:replace="sinhvien/layouts/header::header"></head>
 
-<body>
-<nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
+<body class="d-flex flex-column min-vh-100">
 
-<main class="container px-4 px-lg-5 my-4">
+  <nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
 
-  <!-- HEADER + ACTIONS -->
-  <section class="mb-4">
-    <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3">
-      <div>
-        <h3 class="fw-semibold mb-1">Phản ánh</h3>
-        <div class="text-muted small">
-          <span th:if="${keyword != null and !#strings.isEmpty(keyword)}">
-            Kết quả tìm kiếm cho: <b th:text="${keyword}"></b>
-          </span>
-          <span th:unless="${keyword != null and !#strings.isEmpty(keyword)}">
-            Tổng hợp phản ánh mới nhất
-          </span>
+  <main class="container px-4 px-lg-5 my-4">
+
+    <!-- HEADER + ACTIONS -->
+    <section class="mb-4">
+      <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3">
+        <div>
+          <h3 class="fw-semibold mb-1">Phản ánh</h3>
+          <div class="text-muted small">
+            <span th:if="${keyword != null and !#strings.isEmpty(keyword)}">
+              Kết quả tìm kiếm cho: <b th:text="${keyword}"></b>
+            </span>
+            <span th:unless="${keyword != null and !#strings.isEmpty(keyword)}">
+              Tổng hợp phản ánh mới nhất
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div class="d-flex gap-2" >
+        <div class="d-flex gap-2">
           <!-- ĐÃ đăng nhập -->
           <a class="btn btn-outline-secondary"
             th:href="@{'/PhanAnh/lich-su/' + ${#authentication.principal.nguoiDungId}}"
@@ -32,115 +34,122 @@
           </a>
 
           <!-- CHƯA đăng nhập -->
-          <a class="btn btn-outline-secondary"
-            href="javascript:void(0)"
-            sec:authorize="isAnonymous()"
+          <a class="btn btn-outline-secondary" href="javascript:void(0)" sec:authorize="isAnonymous()"
             onclick="alert('Bạn cần đăng nhập mới sử dụng được!'); window.location='/login'; return false;">
             <i class="fa-solid fa-clock-rotate-left me-1"></i>
             Lịch sử phản ánh của tôi
           </a>
 
-          <a class="btn btn-primary"
-            sec:authorize="isAuthenticated()"
-            th:href="@{/PhanAnh/them}">
+          <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{/PhanAnh/them}">
             Tao phản ánh
           </a>
-          <a class="btn btn-primary"
-            sec:authorize="isAnonymous()"
-            href="javascript:void(0)" 
+          <a class="btn btn-primary" sec:authorize="isAnonymous()" href="javascript:void(0)"
             onclick="alert('Bạn cần đăng nhập mới su dung được!'); window.location='/login'; return false;">
             <i class="fa-solid fa-plus me-1"></i>
             Tao phản ánh
           </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- SEARCH -->
-  <section class="mb-4">
-    <form th:action="@{/PhanAnh}" method="get" class="row g-2 align-items-center">
-      <div class="col-12 col-md-9">
-        <div class="input-group">
-          <span class="input-group-text">🔎</span>
-          <input class="form-control"
-                 type="text"
-                 name="keyword"
-                 placeholder="Tìm theo tiêu đề ..."
-                 th:value="${keyword}">
         </div>
       </div>
+    </section>
 
-      <div class="col-12 col-md-3 d-grid">
-        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+    <!-- SEARCH -->
+    <section class="mb-4">
+      <form th:action="@{/PhanAnh}" method="get" class="row g-2 align-items-center">
+        <div class="col-12 col-md-9">
+          <div class="input-group">
+            <span class="input-group-text">🔎</span>
+            <input class="form-control" type="text" name="keyword" placeholder="Tìm theo tiêu đề ..."
+              th:value="${keyword}">
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 d-grid">
+          <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- LIST / EMPTY -->
+    <section id="dsPhanAnh" class="mb-5">
+
+      <!-- EMPTY STATE -->
+      <div class="alert alert-light border shadow-sm py-4 text-center"
+        th:if="${dsPhanAnh == null or #lists.isEmpty(dsPhanAnh)}">
+        <div class="fw-semibold mb-1">Không có kết quả 😅</div>
+        <div class="text-muted small">Thử từ khóa khác nha.</div>
       </div>
-    </form>
-  </section>
 
-  <!-- LIST / EMPTY -->
-  <section id="dsPhanAnh" class="mb-5">
+      <!-- LIST -->
+      <div class="row g-4" th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
+        <div class="col-12 col-md-6 col-lg-4" th:each="phanAnh : ${dsPhanAnh}">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
 
-    <!-- EMPTY STATE -->
-    <div class="alert alert-light border shadow-sm py-4 text-center"
-         th:if="${dsPhanAnh == null or #lists.isEmpty(dsPhanAnh)}">
-      <div class="fw-semibold mb-1">Không có kết quả 😅</div>
-      <div class="text-muted small">Thử từ khóa khác nha.</div>
-    </div>
-
-    <!-- LIST -->
-    <div class="row g-4" th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
-      <div class="col-12 col-md-6 col-lg-4" th:each="phanAnh : ${dsPhanAnh}">
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body p-4">
-
-            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-              <h5 class="card-title fw-bold mb-0"
+              <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                <h5 class="card-title fw-bold mb-0"
                   style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
                   th:text="${phanAnh.tieuDe}">
-              </h5>
-              <span class="badge rounded-pill text-bg-light border" th:text="${phanAnh.trangThai}"></span>
-            </div>
+                </h5>
+                <span class="badge rounded-pill" th:classappend="${
+        phanAnh.trangThai.name() == 'CHO_XAC_NHAN' ? ' text-bg-secondary' :
+        phanAnh.trangThai.name() == 'DA_XAC_NHAN' ? ' text-bg-primary' :
+        phanAnh.trangThai.name() == 'DANG_XU_LY' ? ' text-bg-warning text-dark' :
+        phanAnh.trangThai.name() == 'DA_HOAN_THANH' ? ' text-bg-success' :
+        phanAnh.trangThai.name() == 'TU_CHOI' ? ' text-bg-danger' :
+        ' text-bg-dark'
+      }" th:text="${
+        phanAnh.trangThai.name() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+        phanAnh.trangThai.name() == 'DA_XAC_NHAN' ? 'Đã xác nhận' :
+        phanAnh.trangThai.name() == 'DANG_XU_LY' ? 'Đang xử lý' :
+        phanAnh.trangThai.name() == 'DA_HOAN_THANH' ? 'Đã hoàn thành' :
+        phanAnh.trangThai.name() == 'TU_CHOI' ? 'Không xử lý' :
+        'Đóng'
+      }">
+                </span>
 
-            <div class="text-muted small mb-3">
-              <i class="fa-regular fa-clock me-1"></i>
-              <span th:text="${phanAnh.taoLuc}"></span>
-            </div>
+              </div>
 
-            <div class="d-flex align-items-center justify-content-end">
-              <a class="btn btn-sm btn-outline-primary"
-                 th:href="@{/PhanAnh/xem/{id}(id=${phanAnh.phanAnhId})}">
-                Xem chi tiết
-              </a>
-            </div>
+              <div class="text-muted small mb-3">
+                <i class="fa-regular fa-clock me-1"></i>
+                <span
+                  th:text="${phanAnh.taoLuc != null ? #temporals.format(phanAnh.taoLuc,'dd/MM/yyyy HH:mm') : ''}"></span>
+              </div>
 
+              <div class="d-flex align-items-center justify-content-end">
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/PhanAnh/xem/{id}(id=${phanAnh.phanAnhId})}">
+                  Xem chi tiết
+                </a>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- PAGINATION -->
-    <ul class="pagination justify-content-center mt-4"
-        th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
-      <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
-        <a class="page-link" th:href="@{/PhanAnh(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
-      </li>
+      <!-- PAGINATION -->
+      <ul class="pagination justify-content-center mt-4" th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
+        <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+          <a class="page-link" th:href="@{/PhanAnh(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+        </li>
 
-      <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
           th:classappend="${i == currentpage} ? 'active'">
-        <a class="page-link" th:href="@{/PhanAnh(pageNo=${i}, keyword=${keyword})}" th:text="${i}">1</a>
-      </li>
+          <a class="page-link" th:href="@{/PhanAnh(pageNo=${i}, keyword=${keyword})}" th:text="${i}">1</a>
+        </li>
 
-      <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
-        <a class="page-link" th:href="@{/PhanAnh(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
-      </li>
-    </ul>
+        <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+          <a class="page-link" th:href="@{/PhanAnh(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+        </li>
+      </ul>
 
-  </section>
+    </section>
 
-</main>
+  </main>
 
-<footer th:replace="sinhvien/layouts/footer::footer"></footer>
+  <footer th:replace="sinhvien/layouts/footer::footer"></footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/assets/js/sinhvien.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/assets/js/sinhvien.js}"></script>
 </body>
+
 </html>

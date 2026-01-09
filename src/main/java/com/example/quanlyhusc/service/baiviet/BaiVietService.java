@@ -17,9 +17,11 @@ public interface BaiVietService {
     Boolean create(BaiVietDTO baiVietDTO, MultipartFile[] files);
     Boolean deleteById(Long id);
     BaiViet findByIdFetchDsTep(Long id);
-    BaiViet findByGhimIsTrue();
+    List<BaiViet> findByGhimIsTrue();
     List<BaiViet> searchByTieuDe(String keyword);
     Page<BaiViet> getAll(int pageNo);
     Page<BaiViet> search(String keyword, int pageNo);
     BaiViet  findByBaiVietId(Long id);
+    Long dem();
+    long demNguoiDungTuanTruoc(int soTuanTruoc);
 }

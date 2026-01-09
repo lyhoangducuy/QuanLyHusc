@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/layouts/header::header"></head>
+
+<body class="sb-nav-fixed">
+  <nav th:replace="admin/layouts/navBar::navBar"></nav>
+
+  <div id="layoutSidenav">
+    <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
+    <div id="layoutSidenav_content">
+      <main>
+        <div class="container-fluid px-4 mt-4">
+
+          <!-- Header -->
+          <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
+            <div class="min-w-0">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h4 class="fw-bold mb-0">
+                  <i class="fa-solid fa-hand-holding-heart me-2"></i>Ủng hộ
+                </h4>
+                <span class="badge bg-light text-dark border">
+                  Quản lý ủng hộ
+                </span>
+              </div>
+             
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-sm btn-primary" th:href="@{/admin/UngHo/them}">
+                <i class="fa-solid fa-plus me-1"></i> Thêm ủng hộ
+              </a>
+            </div>
+          </div>
+
+          <!-- Search -->
+          <form class="card shadow-sm border-0 mb-3" method="get" th:action="@{/admin/UngHo}">
+            <div class="card-body">
+              <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-9">
+                  
+                  <input class="form-control" name="keyword" type="text" placeholder="Nhập ten ủng hộ..."
+                    th:value="${keyword}">
+                </div>
+
+                <div class="col-12 col-md-3 d-grid">
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search me-1"></i> Tìm
+                  </button>
+                </div>
+              </div>
+
+              
+            </div>
+          </form>
+
+          <!-- Table Card -->
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                <div class="fw-semibold">
+                  Danh sách chiến dịch
+                  <span class="text-muted fw-normal" th:if="${keyword != null and keyword != ''}">
+                    (keyword: <b th:text="${keyword}">---</b>)
+                  </span>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                    <tr>
+                      <th style="width:90px;">ID</th>
+                      <th style="min-width:320px;">Tiêu đề</th>
+                      <th style="width:170px;" class="text-end">Mục tiêu</th>
+                      <th style="width:170px;" class="text-end">Đã nhận</th>
+                      <th style="width:140px;">Trạng thái</th>
+                      <th class="text-end" style="width:340px;">Hành động</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr th:each="u : ${dsUngHo}">
+                      <td class="fw-semibold text-nowrap" th:text="${u.ungHoId}">1</td>
+
+                      <td class="min-w-0">
+                        <div class="fw-semibold text-truncate" style="max-width: 520px;" th:text="${u.tieuDe}">Ủng hộ
+                          ABC</div>
+                        <div class="text-muted small text-truncate" style="max-width: 520px;"
+                          th:text="${#strings.abbreviate(u.moTa, 110)}"></div>
+                      </td>
+
+                      <td class="text-end text-nowrap"
+                        th:text="${#numbers.formatDecimal(u.mucTieuVnd, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</td>
+
+                      <td class="text-end text-nowrap"
+                        th:text="${#numbers.formatDecimal(u.daNhanVnd, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</td>
+
+                      <td class="text-nowrap">
+                        <span class="badge rounded-pill"
+                          th:classappend="${u.trangThai} ? ' bg-success' : ' bg-secondary'"
+                          th:text="${u.trangThai} ? 'Đang mở' : 'Đã đóng'">
+                          Đang mở
+                        </span>
+                      </td>
+
+                      <td class="text-end">
+                        <div class="btn-group" role="group" aria-label="actions">
+                          <a class="btn btn-sm btn-outline-info"
+                            th:href="@{/admin/UngHo/{id}/giao-dich(id=${u.ungHoId})}">
+                            <i class="fa-solid fa-receipt me-1"></i>Giao dịch
+                          </a>
+
+                          <a class="btn btn-sm btn-outline-warning"
+                            th:href="@{/admin/UngHo/sua/{id}(id=${u.ungHoId}, pageNo=${currentpage}, keyword=${keyword})}">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Sửa
+                          </a>
+
+                          <form class="d-inline"
+                            th:action="@{/admin/UngHo/xoa/{id}(id=${u.ungHoId}, pageNo=${currentpage}, keyword=${keyword})}"
+                            method="post" onsubmit="return confirm('Xóa ủng hộ này nha? (sẽ xóa luôn giao dịch)');">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                              <i class="fa-solid fa-trash me-1"></i>Xóa
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr th:if="${totalpage == null || totalpage == 0}">
+                      <td colspan="6" class="text-center text-muted py-5">
+                        <i class="fa-regular fa-face-smile me-1"></i>Không có chiến dịch nào phù hợp.
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div class="d-flex justify-content-center mt-4" th:if="${totalpage != null and totalpage >= 1}">
+                <nav aria-label="Pagination">
+                  <ul class="pagination mb-0">
+                    <li class="page-item" th:classappend="${currentpage <= 1} ? 'disabled'">
+                      <a class="page-link" th:href="@{/admin/UngHo(pageNo=${currentpage - 1}, keyword=${keyword})}">
+                        <i class="fa-solid fa-chevron-left me-1"></i>Previous
+                      </a>
+                    </li>
+
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+                      th:classappend="${i == currentpage} ? 'active'">
+                      <a class="page-link" th:href="@{/admin/UngHo(pageNo=${i}, keyword=${keyword})}"
+                        th:text="${i}">1</a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentpage >= totalpage} ? 'disabled'">
+                      <a class="page-link" th:href="@{/admin/UngHo(pageNo=${currentpage + 1}, keyword=${keyword})}">
+                        Next<i class="fa-solid fa-chevron-right ms-1"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer th:replace="admin/layouts/footer::footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script th:src="@{/assets/js/scripts.js}"></script>
+</body>
+
+</html>

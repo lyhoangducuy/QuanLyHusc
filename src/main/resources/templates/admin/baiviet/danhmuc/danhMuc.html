@@ -5,25 +5,34 @@
 
 <body class="sb-nav-fixed">
     <nav th:replace="admin/layouts/navBar::navBar"></nav>
+
     <div id="layoutSidenav">
         <div th:replace="admin/layouts/sideBar::sideBar"></div>
+
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4 mt-5">
-                    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+
+                    <!-- ✅ Search (có action) -->
+                    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
+                        th:action="@{/admin/DanhMuc}" method="get">
                         <div class="input-group">
-                            <input class="form-control" name="keyword" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" th:value="${keyword}"/>
-                            <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <input class="form-control" name="keyword" type="text" placeholder="Search for..."
+                                aria-label="Search for..." aria-describedby="btnNavbarSearch" th:value="${keyword}" />
+                            <button class="btn btn-primary" id="btnNavbarSearch" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
                     </form>
-                    <div class="card shadow-sm">
+
+                    <div class="card shadow-sm mt-3">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <div>
                                 <i class="fa-solid fa-table me-2"></i>
-                                <span class="fw-semibold">Danh danh muc</span>
+                                <span class="fw-semibold">Danh mục</span>
                             </div>
-                            <a class="btn btn-sm btn-primary" href="/admin/DanhMuc/them">
-                                <i class="fa-solid fa-plus me-1"></i> Thêm danh muc
+                            <a class="btn btn-sm btn-primary" th:href="@{/admin/DanhMuc/them}">
+                                <i class="fa-solid fa-plus me-1"></i> Thêm danh mục
                             </a>
                         </div>
 
@@ -33,49 +42,73 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th style="width:70px;">ID</th>
-                                            <th style="min-width:320px;">Ten danh muc </th>
+                                            <th style="min-width:320px;">Tên danh mục</th>
+                                            <th style="width:220px;" class="text-end">Thao tác</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         <tr th:each="danhMuc : ${dsDanhMuc}">
                                             <td class="fw-semibold" th:text="${danhMuc.danhMucId}"></td>
                                             <td><span th:text="${danhMuc.tenDanhMuc}"></span></td>
                                             <td class="text-end">
-                                                <a class="btn btn-sm btn-outline-warning" th:href="@{/admin/DanhMuc/sua/{id}(id=${danhMuc.danhMucId})}">Sửa</a>
-                                                <form class="btn btn-sm" th:action="@{/admin/DanhMuc/xoa/{id}(id=${danhMuc.danhMucId})}" method="post"
-                                                    onsubmit="return confirm('Xóa nha?');">
-                                                    <button class="btn btn-sm btn-outline-danger btn-sm" type="submit">Xóa</button>
+                                                <a class="btn btn-sm btn-outline-warning"
+                                                    th:href="@{/admin/DanhMuc/sua/{id}(id=${danhMuc.danhMucId})}">Sửa</a>
+
+                                                <form class="d-inline"
+                                                    th:action="@{/admin/DanhMuc/xoa/{id}(id=${danhMuc.danhMucId})}"
+                                                    method="post" onsubmit="return confirm('Xóa nha?');">
+                                                    <button class="btn btn-sm btn-outline-danger"
+                                                        type="submit">Xóa</button>
                                                 </form>
-
                                             </td>
                                         </tr>
 
-                                        <!-- Nếu ds rỗng -->
-                                        <tr th:if="${dsDanhMuc == null or #lists.isEmpty(dsDanhMuc)}">
-                                            <td colspan="8" class="text-center text-muted py-4">Không có danh muc nào.
+                                        <!-- ✅ Không có dữ liệu (ưu tiên totalpage == 0) -->
+                                        <tr th:if="${totalpage == null || totalpage == 0}">
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                Không có danh mục nào.
                                             </td>
                                         </tr>
+
+                                        <!-- (backup) nếu m không có totalpage -->
+                                        <tr
+                                            th:if="${totalpage == null and (dsDanhMuc == null or #lists.isEmpty(dsDanhMuc))}">
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                Không có danh mục nào.
+                                            </td>
+                                        </tr>
+
                                     </tbody>
-
                                 </table>
-                                <ul class="pagination justify-content-center mt-4" th:if="${dsDanhMuc != null and !#lists.isEmpty(dsDanhMuc)}">
-                                    <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
-                                        <a class="page-link" th:href="@{/admin/DanhMuc(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+
+                                <!-- ✅ Pagination: chỉ hiện khi > 1 trang -->
+                                <ul class="pagination justify-content-center mt-4"
+                                    th:if="${totalpage != null and totalpage >= 1}">
+
+                                    <li class="page-item" th:classappend="${currentpage <= 1} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/DanhMuc(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
                                     </li>
+
                                     <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
                                         th:classappend="${i == currentpage} ? 'active'">
                                         <a class="page-link"
                                             th:href="@{/admin/DanhMuc(pageNo=${i}, keyword=${keyword})}"
                                             th:text="${i}">1</a>
                                     </li>
-                                    <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
-                                        <a class="page-link" th:href="@{/admin/DanhMuc(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+
+                                    <li class="page-item" th:classappend="${currentpage >= totalpage} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/DanhMuc(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
                                     </li>
                                 </ul>
+
+
                             </div>
                         </div>
                     </div>
-                    <!-- /bảng -->
+
                 </div>
             </main>
 
@@ -83,7 +116,6 @@
         </div>
     </div>
 
-    <!-- ✅ JS giữ như cũ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
     <script th:src="@{/assets/js/scripts.js}"></script>

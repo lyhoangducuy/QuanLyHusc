@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.quanlyhusc.entity.phananh.PhanAnh;
 import com.example.quanlyhusc.entity.NguoiDung;
+import com.example.quanlyhusc.entity.phananh.TrangThaiPhanAnh;
+
 
 
 
@@ -20,10 +22,6 @@ public interface PhanAnhRepository extends JpaRepository<PhanAnh, Long> {
 
     
     Page<PhanAnh> findByNguoiGui(NguoiDung nguoiGui,Pageable pageable);
-    Page<PhanAnh> findByNguoiGuiAndTieuDeContainingIgnoreCase(
-    NguoiDung nguoiDung,
-    String tieuDe,
-    Pageable pageable
-);
-
+    Page<PhanAnh> findByNguoiGuiAndTieuDeContainingIgnoreCase(NguoiDung nguoiDung,String tieuDe,Pageable pageable);
+    Long  countByTrangThai(TrangThaiPhanAnh trangThai);
 }

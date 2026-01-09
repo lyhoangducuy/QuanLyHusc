@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.quanlyhusc.dto.phananh.PhanAnhDTO;
 import com.example.quanlyhusc.entity.NguoiDung;
 import com.example.quanlyhusc.entity.phananh.PhanAnh;
+import com.example.quanlyhusc.entity.phananh.TrangThaiPhanAnh;
 
 public interface PhanAnhService {
     Page<PhanAnh> getAllPhanAnh(int pageNo);
@@ -20,5 +21,7 @@ public interface PhanAnhService {
     Boolean update(Long id,PhanAnhDTO phanAnhDTO,MultipartFile[] file,List<Long> dsTepXoa );
     Page<PhanAnh> getByNguoiGui(NguoiDung nguoiDung,int pageNo);
     Page<PhanAnh> findByNguoiGuiAndTieuDeContainingIgnoreCase(NguoiDung nguoiDung,String tieuDe,int pageNo);
+    Long dem();
+    Long demTheoTinhTrang(TrangThaiPhanAnh trangThaiPhanAnh);
     
 }

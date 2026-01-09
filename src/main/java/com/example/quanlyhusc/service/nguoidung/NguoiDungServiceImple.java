@@ -1,8 +1,14 @@
 package com.example.quanlyhusc.service.nguoidung;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -349,32 +355,88 @@ public class NguoiDungServiceImple implements NguoiDungService {
 
         this.emailService.sendHtml(nd.getEmail(), "Đặt lại mật khẩu", html);
     }
+
     @Transactional
-@Override
-public void datLaiMatKhau(String token, String mkMoi, String mkNhapLai) {
-    if (token == null || token.trim().isEmpty()) 
-        throw new RuntimeException("Token không hợp lệ");
-    if (mkMoi == null || mkMoi.trim().isEmpty()) 
-        throw new RuntimeException("Mật khẩu mới không được để trống");
-    if (mkNhapLai == null || mkNhapLai.trim().isEmpty()) 
-        throw new RuntimeException("Vui lòng nhập lại mật khẩu");
-    if (!mkMoi.equals(mkNhapLai)) 
-        throw new RuntimeException("Mật khẩu nhập lại không khớp");
-    if (mkMoi.length() < 6) 
-        throw new RuntimeException("Mật khẩu phải tối thiểu 6 ký tự");
+    @Override
+    public void datLaiMatKhau(String token, String mkMoi, String mkNhapLai) {
+        if (token == null || token.trim().isEmpty())
+            throw new RuntimeException("Token không hợp lệ");
+        if (mkMoi == null || mkMoi.trim().isEmpty())
+            throw new RuntimeException("Mật khẩu mới không được để trống");
+        if (mkNhapLai == null || mkNhapLai.trim().isEmpty())
+            throw new RuntimeException("Vui lòng nhập lại mật khẩu");
+        if (!mkMoi.equals(mkNhapLai))
+            throw new RuntimeException("Mật khẩu nhập lại không khớp");
+        if (mkMoi.length() < 6)
+            throw new RuntimeException("Mật khẩu phải tối thiểu 6 ký tự");
 
-    TokenQuenMatKhau t = this.tokenQuenMatKhauRepository.findByToken(token.trim())
-        .orElseThrow(() -> new RuntimeException("Link đặt lại mật khẩu không hợp lệ"));
+        TokenQuenMatKhau t = this.tokenQuenMatKhauRepository.findByToken(token.trim())
+                .orElseThrow(() -> new RuntimeException("Link đặt lại mật khẩu không hợp lệ"));
 
-    if (t.getDaDungLuc() != null) throw new RuntimeException("Link này đã được sử dụng");
-    if (OffsetDateTime.now().isAfter(t.getHetHanLuc())) throw new RuntimeException("Link đã hết hạn");
+        if (t.getDaDungLuc() != null)
+            throw new RuntimeException("Link này đã được sử dụng");
+        if (OffsetDateTime.now().isAfter(t.getHetHanLuc()))
+            throw new RuntimeException("Link đã hết hạn");
 
-    NguoiDung nd = t.getNguoiDung();
-    nd.setMatKhauMaHoa(bCryptPasswordEncoder.encode(mkMoi));
-    this.nguoiDungRepository.save(nd);
+        NguoiDung nd = t.getNguoiDung();
+        nd.setMatKhauMaHoa(bCryptPasswordEncoder.encode(mkMoi));
+        this.nguoiDungRepository.save(nd);
 
-    t.setDaDungLuc(OffsetDateTime.now());
-    this.tokenQuenMatKhauRepository.save(t);
-}
+        t.setDaDungLuc(OffsetDateTime.now());
+        this.tokenQuenMatKhauRepository.save(t);
+    }
 
+    @Transactional
+    public void updateProfile(Long myId, String tenDangNhap, String hoTen, String email, String soDienThoai) {
+        NguoiDung me = this.nguoiDungRepository.findByNguoiDungId(myId);
+        String newUsername = tenDangNhap == null ? null : tenDangNhap.trim();
+        String newEmail = email == null ? null : email.trim().toLowerCase();
+        if (newUsername != null && !newUsername.isBlank()) {
+            boolean taken = nguoiDungRepository.existsByTenDangNhapAndNguoiDungIdNot(newUsername, myId);
+            if (taken)
+                throw new IllegalArgumentException("USERNAME_EXISTS");
+        }
+        if (newEmail != null && !newEmail.isBlank()) {
+            boolean emailTaken = nguoiDungRepository.existsByEmailAndNguoiDungIdNot(newEmail, myId);
+            if (emailTaken) {
+                throw new IllegalArgumentException("EMAIL_EXISTS");
+            }
+        }
+
+        me.setHoTen(hoTen);
+        me.setEmail(newEmail);
+        me.setSoDienThoai(soDienThoai);
+        me.setCapNhatLuc(OffsetDateTime.now());
+
+        nguoiDungRepository.save(me);
+    }
+
+    @Override
+    public Long dem() {
+        return this.nguoiDungRepository.countByTrangThaiHoatDong(true);
+    }
+
+    @Override
+    public long demNguoiDungTuanTruoc(int soTuanTruoc) {
+        // soTuanTruoc = 1 => tuần trước
+        // soTuanTruoc = 2 => 2 tuần trước
+
+        ZoneId zone = ZoneId.of("Asia/Bangkok");
+        OffsetDateTime now = OffsetDateTime.now(zone);
+
+        WeekFields wf = WeekFields.of(Locale.forLanguageTag("vi-VN"));
+        LocalDate today = now.toLocalDate();
+
+        // đầu tuần hiện tại (thứ 2)
+        LocalDate startThisWeekDate = today.with(wf.dayOfWeek(), 1);
+
+        ZoneOffset offset = zone.getRules().getOffset(Instant.now());
+        OffsetDateTime startThisWeek = startThisWeekDate.atStartOfDay().atOffset(offset);
+
+        // khoảng tuần cần lấy: [start - soTuanTruoc, start - (soTuanTruoc-1))
+        OffsetDateTime start = startThisWeek.minusWeeks(soTuanTruoc);
+        OffsetDateTime end = startThisWeek.minusWeeks(soTuanTruoc - 1);
+
+        return this.nguoiDungRepository.countByTaoLucBetween(start, end);
+    }
 }

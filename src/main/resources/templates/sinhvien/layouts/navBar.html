@@ -1,33 +1,78 @@
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navBar">
-            <div class="container px-5">
-                <a class="navbar-brand" href="#!">Quan ly HUSC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Trang chu</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/PhanAnh}">Phản ánh </a></li>
-                        <li class="nav-item"><a class="nav-link"  th:href="@{/chat}" >Chat </a></li>
-                        <li class="nav-item" >
-                            <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <div sec:authorize="isAuthenticated()">
-                                        <li><span class="dropdown-item" sec:authentication="name"></span></li>
-                                    </div>
-                                    <li><a class="dropdown-item" href="#!">Settings</a></li>
-                                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                                    <li><hr class="dropdown-divider" /></li>
-                                    <li>
-                                        <form th:action="@{/logout}" method="post" class="m-0">
-                                            <button type="submit" class="dropdown-item">Logout</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link"th:href="@{/login}">Dang nhap</a></li>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </div>
-        </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navBar">
+  <div class="container px-5">
+    <a class="navbar-brand" href="#!">Quan ly HUSC</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/}">Trang chu</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/PhanAnh}">Phản ánh</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/UngHo}">Ung ho</a>
+        </li>
+
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <a class="nav-link" th:href="@{/chat}">Chat ho tro</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" sec:authorize="isAnonymous()"
+            onclick="alert('Bạn cần đăng nhập mới sử dụng được!'); window.location='/login'; return false;">
+            <i class="fa-solid fa-clock-rotate-left me-1"></i>
+            Chat
+          </a>
+        </li>
+
+      <!-- ĐÃ đăng nhập: dropdown user -->
+      <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="fas fa-user fa-fw"></i>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+          <!-- User name -->
+          <li class="px-3 py-2">
+            <div class="small text-muted">Tài khoản</div>
+            <span class="fw-semibold" sec:authentication="name"></span>
+          </li>
+
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+
+          <li><a class="dropdown-item" th:href="@{/chinhSuaThongTin}">Chinh sua thong tin</a></li>
+
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+
+          <li>
+            <form th:action="@{/logout}" method="post" class="m-0">
+              <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+          </li>
+
+        </ul>
+      </li>
+
+      <!-- CHƯA đăng nhập -->
+      <li class="nav-item" sec:authorize="isAnonymous()">
+        <a class="nav-link" th:href="@{/login}">Dang nhap</a>
+      </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

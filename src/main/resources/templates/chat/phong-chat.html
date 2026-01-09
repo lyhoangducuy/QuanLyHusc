@@ -5,37 +5,55 @@
 
 <head th:replace="sinhvien/layouts/header::header"></head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="sinhvien/layouts/navBar::navBar"></nav>
 
 <main class="container px-4 px-lg-5 my-4">
 
-  <!-- TOP BAR -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-    <a class="btn btn-sm btn-outline-secondary" th:href="@{/chat}">← Danh sách</a>
 
-    <div class="text-muted small">
-      Cuộc trò chuyện ID: <b th:text="${cuocId}"></b>
-    </div>
-  </div>
 
-  <div class="chat-card">
-    <!-- HEADER CHAT -->
-    <div class="chat-top">
-      <div class="chat-user">
-        <div class="chat-avatar" th:text="${#strings.substring(me.hoTen,0,1)}">M</div>
-        <div class="chat-user-info">
-          <div class="chat-user-name" th:text="${me.hoTen}">Tên của tôi</div>
-          <div class="chat-user-sub">Đang hoạt động</div>
+  <!-- CHAT CARD -->
+  <div class="card border-0 shadow-sm overflow-hidden chat-card">
+
+   <!-- HEADER -->
+<div class="card-header bg-white border-0 py-3">
+  <div class="d-flex align-items-center justify-content-between gap-2">
+
+    <!-- LEFT: Back + Avatar + Name -->
+    <div class="d-flex align-items-center gap-2 min-w-0">
+
+      <!-- Nút quay lại -->
+      <a class="btn btn-sm btn-outline-secondary px-2" th:href="@{/chat}">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+
+      <!-- Avatar + tên người dùng -->
+      <div class="d-flex align-items-center gap-2 min-w-0">
+        <div class="chat-avatar"
+             th:text="${#strings.substring(me.hoTen,0,1)}">M</div>
+        <div class="min-w-0">
+          <div class="fw-semibold text-truncate"
+               th:text="${me.hoTen}">Tên của tôi</div>
+          <div class="text-muted small">Đang trò chuyện</div>
         </div>
       </div>
+
     </div>
+
+    <!-- RIGHT: WS status -->
+    <div class="text-muted small text-nowrap" id="wsStatus">
+      WS: đang kết nối...
+    </div>
+
+  </div>
+</div>
+
 
     <input type="hidden" id="cuocId" th:value="${cuocId}">
     <input type="hidden" id="meId" th:value="${me.nguoiDungId}">
 
     <!-- BODY -->
-    <div id="msgs" class="chat-body">
+    <div id="msgs" class="card-body chat-body">
 
       <!-- LỊCH SỬ (SSR) -->
       <div th:each="m : ${lichSu}"
@@ -43,7 +61,6 @@
            th:attr="data-sender-id=${m.nguoiGui.nguoiDungId},
                     data-sender-name=${m.nguoiGui.hoTen},
                     data-sent-at=${m.taoLuc}">
-
         <div class="bubble">
           <div class="msg-name" th:text="${m.nguoiGui.hoTen}">Tên</div>
           <div class="msg-text" th:text="${m.noiDung}">Nội dung</div>
@@ -53,14 +70,17 @@
 
     </div>
 
-    <!-- FOOTER INPUT -->
-    <div class="chat-bottom">
-      <div class="chat-input-wrap">
-        <input id="text" class="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off"/>
-        <button class="chat-send" type="button" id="btnSend">Gửi</button>
+    <!-- FOOTER -->
+    <div class="card-footer bg-white border-0 chat-bottom">
+      <div class="d-flex gap-2 align-items-center">
+        <input id="text" class="form-control chat-input" placeholder="Nhập tin nhắn..." autocomplete="off"/>
+        <button class="btn btn-primary chat-send" type="button" id="btnSend">
+          <i class="fa-regular fa-paper-plane me-1"></i> Gửi
+        </button>
       </div>
-      <div class="chat-status" id="wsStatus">WS: đang kết nối...</div>
+      <div class="text-muted small mt-2 d-none" id="wsStatusBottom"></div>
     </div>
+
   </div>
 
 </main>
@@ -73,182 +93,65 @@
 <script th:src="@{/assets/js/sinhvien.js}"></script>
 
 <style>
-  /* ===== Card tổng kiểu Zalo ===== */
-  .chat-card{
-    border-radius: 18px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 10px 26px rgba(0,0,0,.08);
-  }
-
-  /* ===== Header ===== */
-  .chat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding: 14px 16px;
-    background: #ffffff;
-    border-bottom: 1px solid rgba(0,0,0,.06);
-  }
-
-  .chat-user{
-    display:flex;
-    gap: 10px;
-    align-items:center;
-  }
+  .chat-card{ border-radius: 16px; }
 
   .chat-avatar{
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width: 40px; height: 40px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
     font-weight: 800;
-    color: #0b255a;
     background: #e8f2ff;
-    border: 1px solid rgba(60,130,255,.22);
+    color: #0b255a;
+    border: 1px solid rgba(13,110,253,.18);
+    flex: 0 0 auto;
   }
 
-  .chat-user-name{
-    font-weight: 800;
-    font-size: 15px;
-    line-height: 1.2;
-  }
-
-  .chat-user-sub{
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 2px;
-  }
-
-  /* ===== Body chat ===== */
   .chat-body{
-    height: 70vh;
+    height: 68vh;
     overflow:auto;
+    background: #f6f7fb;
     padding: 14px 12px;
-    background: linear-gradient(180deg, #f5f8ff 0%, #fafafa 100%);
     scroll-behavior: smooth;
   }
 
-  /* ===== Row ===== */
-  .msg-row{
-    display:flex;
-    margin: 10px 0;
-  }
-
+  .msg-row{ display:flex; margin: 10px 0; }
   .msg-row.me{ justify-content:flex-end; }
   .msg-row.other{ justify-content:flex-start; }
 
-  /* ===== Bubble ===== */
   .bubble{
-    max-width: min(74%, 700px);
+    max-width: min(78%, 720px);
     padding: 10px 12px;
-    border-radius: 18px;
-    position: relative;
+    border-radius: 16px;
     border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    box-shadow: 0 6px 14px rgba(0,0,0,.06);
     word-break: break-word;
+    background:#fff;
   }
 
-  /* other: trái - trắng */
-  .msg-row.other .bubble{
-    background:#fff;
-    color:#111827;
-  }
-  .msg-row.other .bubble::before{
-    content:"";
-    position:absolute;
-    left:-6px;
-    bottom: 12px;
-    width: 12px;
-    height: 12px;
-    background:#fff;
-    border-left:1px solid rgba(0,0,0,.06);
-    border-bottom:1px solid rgba(0,0,0,.06);
-    transform: rotate(45deg);
-  }
-
-  /* me: phải - xanh */
   .msg-row.me .bubble{
     background:#e8f2ff;
-    border-color: rgba(60,130,255,.22);
+    border-color: rgba(13,110,253,.18);
     color:#0b255a;
   }
-  .msg-row.me .bubble::before{
-    content:"";
-    position:absolute;
-    right:-6px;
-    bottom: 12px;
-    width: 12px;
-    height: 12px;
-    background:#e8f2ff;
-    border-right:1px solid rgba(60,130,255,.22);
-    border-bottom:1px solid rgba(60,130,255,.22);
-    transform: rotate(-45deg);
+
+  .msg-name{
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    opacity: .95;
   }
 
-  /* ===== Name / Text / Time ===== */
-  .msg-name{
-    font-weight: 800;
-    font-size: 15px;   /* to hơn nội dung */
-    line-height: 1.2;
-    margin-bottom: 4px;
-  }
-  .msg-text{
-    font-size: 13px;
-    line-height: 1.45;
-  }
+  .msg-text{ font-size: 14px; line-height: 1.45; }
   .msg-time{
     font-size: 11px;
     color:#6b7280;
     margin-top: 6px;
-    opacity: .9;
   }
   .msg-row.me .msg-time{ text-align:right; }
-  .msg-row.other .msg-time{ text-align:left; }
 
-  /* ===== Footer ===== */
-  .chat-bottom{
-    padding: 10px 12px;
-    background:#fff;
-    border-top: 1px solid rgba(0,0,0,.06);
-  }
+  .chat-bottom{ padding: 12px; }
 
-  .chat-input-wrap{
-    display:flex;
-    gap: 10px;
-    align-items:center;
-    padding: 8px 10px;
-    border: 1px solid rgba(0,0,0,.08);
-    border-radius: 14px;
-    background:#fff;
-  }
-
-  .chat-input{
-    flex: 1;
-    border: 0;
-    outline: none;
-    box-shadow: none;
-    font-size: 14px;
-  }
-
-  .chat-send{
-    border: 0;
-    border-radius: 12px;
-    padding: 8px 14px;
-    background: #0d6efd;
-    color: #fff;
-    font-weight: 700;
-  }
-  .chat-send:active{ transform: translateY(1px); }
-
-  .chat-status{
-    margin-top: 8px;
-    font-size: 12px;
-    color:#6b7280;
-  }
+  .chat-input{ border-radius: 12px; }
+  .chat-send{ border-radius: 12px; font-weight: 700; white-space: nowrap; }
 </style>
 
 <script>
@@ -260,10 +163,9 @@
   const btnSend  = document.getElementById("btnSend");
   const wsStatus = document.getElementById("wsStatus");
 
-  // nhớ tên theo id để khỏi User#...
   const nameMap = new Map();
 
-  // ===== 1) Fix class trái/phải cho lịch sử (quan trọng: F5 không lệch) =====
+  // Fix class trái/phải cho lịch sử
   initHistory();
 
   function initHistory(){
@@ -281,7 +183,7 @@
     scrollBottom();
   }
 
-  // ===== 2) WS connect =====
+  // WS connect
   const sock = new SockJS("/ws");
   const stomp = Stomp.over(sock);
   stomp.debug = null;
@@ -291,8 +193,7 @@
   function onConnected(){
     wsStatus.textContent = "WS: đã kết nối";
 
-    const topic = "/topic/chat." + cuocId;
-    stomp.subscribe(topic, (frame) => {
+    stomp.subscribe("/topic/chat." + cuocId, (frame) => {
       const m = JSON.parse(frame.body);
       appendFromWs(m);
     });
@@ -302,7 +203,7 @@
     wsStatus.textContent = "WS: lỗi kết nối";
   }
 
-  // ===== 3) Append tin nhắn từ WS =====
+  // Append từ WS
   function appendFromWs(m){
     const senderId   = Number(m.nguoiGuiId || 0);
     const senderName = (m.tenNguoiGui || nameMap.get(senderId) || ("User#" + senderId));
@@ -318,7 +219,6 @@
 
     const bubble = document.createElement("div");
     bubble.className = "bubble";
-
     bubble.innerHTML = `
       <div class="msg-name">${escapeHtml(senderName)}</div>
       <div class="msg-text">${escapeHtml(content)}</div>
@@ -330,7 +230,7 @@
     scrollBottom();
   }
 
-  // ===== 4) Send =====
+  // Send
   btnSend.addEventListener("click", sendMsg);
   inputEl.addEventListener("keydown", (e) => {
     if(e.key === "Enter") sendMsg();
@@ -354,7 +254,6 @@
     inputEl.focus();
   }
 
-  // ===== helpers =====
   function scrollBottom(){
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }

@@ -210,6 +210,16 @@ public class PhanAnhServiceImple implements PhanAnhService {
         return this.phanAnhRepository.findByNguoiGuiAndTieuDeContainingIgnoreCase(nguoiDung, tieuDe, pageable);
     }
 
+    @Override
+    public Long dem() {
+       return this.phanAnhRepository.count();
+    }
+
+    @Override
+    public Long demTheoTinhTrang(TrangThaiPhanAnh trangThaiPhanAnh) {
+        return this.phanAnhRepository.countByTrangThai(trangThaiPhanAnh);
+    }
+
 
     
 }

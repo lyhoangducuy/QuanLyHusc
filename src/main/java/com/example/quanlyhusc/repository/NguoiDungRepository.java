@@ -11,55 +11,64 @@ import com.example.quanlyhusc.entity.NguoiDung;
 import com.example.quanlyhusc.entity.baiviet.DanhMucBaiViet;
 
 import java.beans.Transient;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Long> {
-    NguoiDung findByTenDangNhap(String tenDangNhap);
+        NguoiDung findByTenDangNhap(String tenDangNhap);
 
-    @EntityGraph(attributePaths = {"nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
-    NguoiDung findByNguoiDungId(Long nguoiDungId);
+        @EntityGraph(attributePaths = { "nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
+        NguoiDung findByNguoiDungId(Long nguoiDungId);
 
-    Optional<NguoiDung> findByEmail(String email);      
-    @EntityGraph(attributePaths = { "nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
-    Page<NguoiDung> findAll(Pageable pageable);
+        Optional<NguoiDung> findByEmail(String email);
 
-    @Query("""
-                select distinct nd
-                from NguoiDung nd
-                join nd.nguoiDungVaiTro ndvt
-                join ndvt.vaiTro vt
-                where vt.maVaiTro = :ma
-            """)
-    List<NguoiDung> findAllByMaVaiTro(@Param("ma") String ma);
+        @EntityGraph(attributePaths = { "nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
+        Page<NguoiDung> findAll(Pageable pageable);
 
-    @Query("""
-                select distinct nd
-                from NguoiDung nd
-                join nd.nguoiDungVaiTro ndvt
-                join ndvt.vaiTro vt
-                where vt.maVaiTro in :dsMa
-            """)
-    List<NguoiDung> findAllByMaVaiTroIn(@Param("dsMa") List<String> dsMa);
+        @Query("""
+                            select distinct nd
+                            from NguoiDung nd
+                            join nd.nguoiDungVaiTro ndvt
+                            join ndvt.vaiTro vt
+                            where vt.maVaiTro = :ma
+                        """)
+        List<NguoiDung> findAllByMaVaiTro(@Param("ma") String ma);
 
-    // NguoiDungRepository
-    @Query("""
-            select nd from NguoiDung nd
-            left join fetch nd.nguoiDungVaiTro ndvt
-            left join fetch ndvt.vaiTro vt
-            where nd.tenDangNhap = :username
-            """)
-    NguoiDung findByTenDangNhapFetchRole(@Param("username") String username);
+        @Query("""
+                            select distinct nd
+                            from NguoiDung nd
+                            join nd.nguoiDungVaiTro ndvt
+                            join ndvt.vaiTro vt
+                            where vt.maVaiTro in :dsMa
+                        """)
+        List<NguoiDung> findAllByMaVaiTroIn(@Param("dsMa") List<String> dsMa);
 
-    @EntityGraph(attributePaths = { "nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
-    @Query("""
-            select nd
-            from NguoiDung nd
-            where lower(nd.tenDangNhap) like lower(concat('%', :keyword, '%'))
-               or lower(nd.hoTen) like lower(concat('%', :keyword, '%'))
-               or lower(nd.email) like lower(concat('%', :keyword, '%'))
-            """)
-    Page<NguoiDung> search(@Param("keyword") String keyword, Pageable pageable);
-    void deleteByNguoiDungId(Long nguoiDungId);
+        // NguoiDungRepository
+        @Query("""
+                        select nd from NguoiDung nd
+                        left join fetch nd.nguoiDungVaiTro ndvt
+                        left join fetch ndvt.vaiTro vt
+                        where nd.tenDangNhap = :username
+                        """)
+        NguoiDung findByTenDangNhapFetchRole(@Param("username") String username);
+
+        @EntityGraph(attributePaths = { "nguoiDungVaiTro", "nguoiDungVaiTro.vaiTro" })
+        @Query("""
+                        select nd
+                        from NguoiDung nd
+                        where lower(nd.tenDangNhap) like lower(concat('%', :keyword, '%'))
+                           or lower(nd.hoTen) like lower(concat('%', :keyword, '%'))
+                           or lower(nd.email) like lower(concat('%', :keyword, '%'))
+                        """)
+        Page<NguoiDung> search(@Param("keyword") String keyword, Pageable pageable);
+
+        void deleteByNguoiDungId(Long nguoiDungId);
+
+        boolean existsByEmailAndNguoiDungIdNot(String email, Long nguoiDungId);
+
+        boolean existsByTenDangNhapAndNguoiDungIdNot(String tenDangNhap, Long nguoiDungId);
+        Long  countByTrangThaiHoatDong(Boolean trangThaiHoatDong);
+        long countByTaoLucBetween(OffsetDateTime start, OffsetDateTime end);
 
 }

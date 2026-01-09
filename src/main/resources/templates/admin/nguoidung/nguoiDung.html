@@ -94,7 +94,7 @@
                 </table>
 
                 <!-- Pagination -->
-                <ul class="pagination justify-content-center mt-4" th:if="${totalpage != null }">
+                <ul class="pagination justify-content-center mt-4" th:if="${totalpage != null and !#lists.isEmpty(dsNguoiDung)}">
                   <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
                     <a class="page-link" th:href="@{/admin/NguoiDung(pageNo=${currentpage - 1}, keyword=${keyword})}">
                       Previous

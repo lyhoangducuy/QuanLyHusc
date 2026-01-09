@@ -1,7 +1,14 @@
 package com.example.quanlyhusc.service.baiviet;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.WeekFields;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +189,7 @@ public class BaiVietServiceImple implements BaiVietService {
     }
 
     @Override
-    public BaiViet findByGhimIsTrue() {
+    public List<BaiViet> findByGhimIsTrue() {
         return this.baiVietRepository.findByGhimIsTrue();
     }
 
@@ -206,6 +213,33 @@ public class BaiVietServiceImple implements BaiVietService {
         return this.baiVietRepository.findByBaiVietId(id);
     }
 
+    @Override
+    public Long dem() {
+        return this.baiVietRepository.count();
+    }
+    @Override
+    public long demNguoiDungTuanTruoc(int soTuanTruoc) {
+        // soTuanTruoc = 1 => tuần trước
+        // soTuanTruoc = 2 => 2 tuần trước
+
+        ZoneId zone = ZoneId.of("Asia/Bangkok");
+        OffsetDateTime now = OffsetDateTime.now(zone);
+
+        WeekFields wf = WeekFields.of(Locale.forLanguageTag("vi-VN"));
+        LocalDate today = now.toLocalDate();
+
+        // đầu tuần hiện tại (thứ 2)
+        LocalDate startThisWeekDate = today.with(wf.dayOfWeek(), 1);
+
+        ZoneOffset offset = zone.getRules().getOffset(Instant.now());
+        OffsetDateTime startThisWeek = startThisWeekDate.atStartOfDay().atOffset(offset);
+
+        // khoảng tuần cần lấy: [start - soTuanTruoc, start - (soTuanTruoc-1))
+        OffsetDateTime start = startThisWeek.minusWeeks(soTuanTruoc);
+        OffsetDateTime end = startThisWeek.minusWeeks(soTuanTruoc - 1);
+
+        return this.baiVietRepository.countByTaoLucBetween(start, end);
+    }
 
    
 }

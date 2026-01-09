@@ -1,5 +1,6 @@
 package com.example.quanlyhusc.repository.baiviet;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public interface BaiVietRepository extends JpaRepository<BaiViet,Long>{
     where bv.baiVietId = :id
     """)
     BaiViet findByIdFetchDsTep(@Param("id") Long id);
-    BaiViet findByGhimIsTrue();
+    List<BaiViet> findByGhimIsTrue();
 
 
     void deleteById(Long id);
@@ -50,6 +51,6 @@ public interface BaiVietRepository extends JpaRepository<BaiViet,Long>{
     @EntityGraph(attributePaths = {"tacGiaId", "dsDanhMuc", "dsDanhMuc.danhMuc", "dsTep"})
     BaiViet findByBaiVietId(Long id);
     
-
+    Long countByTaoLucBetween(OffsetDateTime start, OffsetDateTime end);
 
 }

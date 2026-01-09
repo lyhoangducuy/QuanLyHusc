@@ -4,186 +4,211 @@
 <head th:replace="admin/layouts/header::header"></head>
 
 <body class="sb-nav-fixed">
-<nav th:replace="admin/layouts/navBar::navBar"></nav>
+    <nav th:replace="admin/layouts/navBar::navBar"></nav>
 
-<div id="layoutSidenav">
-    <div th:replace="admin/layouts/sideBar::sideBar"></div>
+    <div id="layoutSidenav">
+        <div th:replace="admin/layouts/sideBar::sideBar"></div>
 
-    <div id="layoutSidenav_content">
-        <main>
-            <div class="container-fluid px-4 mt-5">
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 mt-5">
 
-                <!-- Search -->
-                <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
-                      th:action="@{/admin/PhanAnh}" method="get">
-                    <div class="input-group">
-                        <input class="form-control" name="keyword" type="text"
-                               placeholder="Search for..."
-                               aria-label="Search for..."
-                               aria-describedby="btnNavbarSearch"
-                               th:value="${keyword}"/>
-                        <button class="btn btn-primary" id="btnNavbarSearch" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
-
-                <div class="card shadow-sm mt-3">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <div>
-                            <i class="fa-solid fa-table me-2"></i>
-                            <span class="fw-semibold">Danh sách phản ánh</span>
+                    <!-- Search -->
+                    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
+                        th:action="@{/admin/PhanAnh}" method="get">
+                        <div class="input-group">
+                            <input class="form-control" name="keyword" type="text" placeholder="Search for..."
+                                aria-label="Search for..." aria-describedby="btnNavbarSearch" th:value="${keyword}" />
+                            <button class="btn btn-primary" id="btnNavbarSearch" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
-                        <!-- Nếu admin có quyền tạo phản ánh thì mở -->
-                        <!-- <a class="btn btn-sm btn-primary" href="/admin/PhanAnh/them">
+                    </form>
+
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div>
+                                <i class="fa-solid fa-table me-2"></i>
+                                <span class="fw-semibold">Danh sách phản ánh</span>
+                            </div>
+                            <!-- Nếu admin có quyền tạo phản ánh thì mở -->
+                            <!-- <a class="btn btn-sm btn-primary" href="/admin/PhanAnh/them">
                             <i class="fa-solid fa-plus me-1"></i> Thêm phản ánh
                         </a> -->
-                    </div>
+                        </div>
 
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th style="width:70px;">ID</th>
-                                    <th style="min-width:320px;">Tiêu đề</th>
-                                    <th style="width:160px;">Người gửi</th>
-                                    <th style="width:150px;">Loại</th>
-                                    <th style="width:210px;">Trạng thái</th>
-                                    <th style="width:170px;">Tạo lúc</th>
-                                    <th style="width:170px;">Cập nhật</th>
-                                    <th style="width:260px;" class="text-end">Thao tác</th>
-                                </tr>
-                                </thead>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width:70px;">ID</th>
+                                            <th style="min-width:320px;">Tiêu đề</th>
+                                            <th style="width:160px;">Người gửi</th>
+                                            <th style="width:150px;">Loại</th>
+                                            <th style="width:210px;">Trạng thái</th>
+                                            <th style="width:170px;">Tạo lúc</th>
+                                            <th style="width:170px;">Cập nhật</th>
+                                            <th style="width:260px;" class="text-end">Thao tác</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody>
-                                <tr th:each="pa : ${dsPhanAnh}">
-                                    <!-- ID -->
-                                    <td class="fw-semibold" th:text="${pa.phanAnhId}"></td>
+                                    <tbody>
+                                        <tr th:each="pa : ${dsPhanAnh}">
+                                            <!-- ID -->
+                                            <td class="fw-semibold" th:text="${pa.phanAnhId}"></td>
 
-                                    <!-- Tiêu đề + mô tả -->
-                                    <td>
-                                        <div class="fw-semibold" th:text="${pa.tieuDe}">Tiêu đề</div>
-
-                                       
-                                    </td>
-
-                                    <!-- Người gửi -->
-                                    <td>
-                                        <span th:text="${pa.nguoiGui.hoTen}">Người gửi</span>
-                                    </td>
-
-                                    <!-- Loại -->
-                                    <td>
-                                        <span class="badge bg-secondary"
-                                              th:text="${pa.loai.tenLoai}">Môi trường</span>
-                                    </td>
-
-                                    <!-- Trạng thái (badge màu) -->
-                                    <td>
-                                        <form th:action="@{/admin/PhanAnh/capNhatTrangThai/{id}(id=${pa.phanAnhId})}"
-                                              method="post">
-                                            <select class="form-select form-select-sm"
-                                                    name="trangThai"
-                                                    onchange="this.form.submit()">
-                                                <option th:value="CHO_XAC_NHAN"
-                                                        th:selected="${pa.trangThai} == 'CHO_XAC_NHAN'"
-                                                        >Chờ xác nhận
-                                                </option>
-                                                <option th:value="DA_XAC_NHAN"
-                                                        th:selected="${pa.trangThai} == 'DA_XAC_NHAN'"
-                                                        >Đã xác nhận
-                                                </option>
-                                                <option th:value="DANG_XU_LY"
-                                                        th:selected="${pa.trangThai} == 'DANG_XU_LY'"
-                                                        >Đang xử lý
-                                                </option>
-                                                <option th:value="DA_HOAN_THANH"
-                                                        th:selected="${pa.trangThai} == 'DA_HOAN_THANH'"
-                                                        >Đã hoàn thành
-                                                </option>
-                                                <option th:value="TU_CHOI"
-                                                        th:selected="${pa.trangThai} == 'TU_CHOI'"
-                                                        >Không xử lý
-                                                </option>
-                                                <option th:value="DONG"
-                                                        th:selected="${pa.trangThai} == 'DONG'"
-                                                        >Đóng
-                                                </option>
-                                            </select>
-
-                                        </form>
-                                    </td>
-
-                                    <!-- thời gian -->
-                                    <td class="text-muted"
-                                        th:text="${#temporals.format(pa.taoLuc, 'dd/MM/yyyy HH:mm')}">--
-                                    </td>
-                                    <td class="text-muted"
-                                        th:text="${#temporals.format(pa.capNhatLuc, 'dd/MM/yyyy HH:mm')}">--
-                                    </td>
-
-                                    <!-- thao tác -->
-                                    <td class="text-end">
-                                        <a class="btn btn-sm btn-outline-primary"
-                                           th:href="@{/PhanAnh/xem/{id}(id=${pa.phanAnhId})}">
-                                            Xem
-                                        </a>
-                                        <a class="btn btn-sm btn-outline-warning" 
-                                        th:href="@{/admin/PhanAnh/sua/{id}(id=${pa.phanAnhId})}">Sửa</a>
-                                        <!-- Xóa (nếu muốn) -->
-                                        <form class="d-inline"
-                                              th:action="@{/admin/PhanAnh/xoa/{id}(id=${pa.phanAnhId})}"
-                                              method="post"
-                                              onsubmit="return confirm('Xóa phản ánh này nha?');">
-                                            <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
-                                        </form>
-                                    </td>
-                                </tr>
-
-                                <!-- ds rỗng -->
-                                <tr th:if="${dsPhanAnh == null or #lists.isEmpty(dsPhanAnh)}">
-                                    <td colspan="8" class="text-center text-muted py-4">Không có phản ánh nào.</td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <!-- pagination -->
-                            <ul class="pagination justify-content-center mt-4"
-                               th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
-                                <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
-                                    <a class="page-link"
-                                    th:href="@{/admin/PhanAnh(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
-                                </li>
-
-                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
-                                    th:classappend="${i == currentpage} ? 'active'">
-                                    <a class="page-link"
-                                    th:href="@{/admin/PhanAnh(pageNo=${i}, keyword=${keyword})}"
-                                    th:text="${i}">1</a>
-                                </li>
-
-                                <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
-                                    <a class="page-link"
-                                    th:href="@{/admin/PhanAnh(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
-                                </li>
-                            </ul>
+                                            <!-- Tiêu đề + mô tả -->
+                                            <td>
+                                                <div class="fw-semibold" th:text="${pa.tieuDe}">Tiêu đề</div>
 
 
+                                            </td>
+
+                                            <!-- Người gửi -->
+                                            <td>
+                                                <span th:text="${pa.nguoiGui.hoTen}">Người gửi</span>
+                                            </td>
+
+                                            <!-- Loại -->
+                                            <td>
+                                                <span class="badge bg-secondary" th:text="${pa.loai.tenLoai}">Môi
+                                                    trường</span>
+                                            </td>
+
+                                            <!-- Trạng thái (badge màu) -->
+                                            <td>
+                                                <form
+                                                    th:action="@{/admin/PhanAnh/capNhatTrangThai/{id}(id=${pa.phanAnhId})}"
+                                                    method="post">
+                                                    <select class="form-select form-select-sm" name="trangThai"
+                                                        onchange="this.form.submit()"
+                                                        th:disabled="${pa.trangThai.name() == 'DONG'}">
+
+                                                        <!-- ✅ Trạng thái hiện tại (Việt hoá) -->
+                                                        <option th:value="${pa.trangThai}" selected th:text="${
+                                                            pa.trangThai.name() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+                                                            pa.trangThai.name() == 'DA_XAC_NHAN' ? 'Đã xác nhận' :
+                                                            pa.trangThai.name() == 'DANG_XU_LY' ? 'Đang xử lý' :
+                                                            pa.trangThai.name() == 'DA_HOAN_THANH' ? 'Đã hoàn thành' :
+                                                            pa.trangThai.name() == 'TU_CHOI' ? 'Không xử lý' :
+                                                            'Đóng'
+                                                            }">
+                                                        </option>
+
+                                                        <!-- ✅ CHO_XAC_NHAN -> chỉ cho chuyển qua DA_XAC_NHAN -->
+                                                        <option th:if="${pa.trangThai.name() == 'CHO_XAC_NHAN'}"
+                                                            th:value="'DA_XAC_NHAN'">
+                                                            Đã xác nhận
+                                                        </option>
+
+                                                        <!-- ✅ DA_XAC_NHAN -> DANG_XU_LY hoặc TU_CHOI -->
+                                                        <option th:if="${pa.trangThai.name() == 'DA_XAC_NHAN'}"
+                                                            th:value="'DANG_XU_LY'">
+                                                            Đang xử lý
+                                                        </option>
+                                                        <option th:if="${pa.trangThai.name() == 'DA_XAC_NHAN'}"
+                                                            th:value="'TU_CHOI'">
+                                                            Không xử lý
+                                                        </option>
+
+                                                        <!-- ✅ DANG_XU_LY -> DA_HOAN_THANH hoặc TU_CHOI -->
+                                                        <option th:if="${pa.trangThai.name() == 'DANG_XU_LY'}"
+                                                            th:value="'DA_HOAN_THANH'">
+                                                            Đã hoàn thành
+                                                        </option>
+                                                        <option th:if="${pa.trangThai.name() == 'DANG_XU_LY'}"
+                                                            th:value="'TU_CHOI'">
+                                                            Không xử lý
+                                                        </option>
+
+                                                        <!-- ✅ DA_HOAN_THANH -> DONG -->
+                                                        <option th:if="${pa.trangThai.name() == 'DA_HOAN_THANH'}"
+                                                            th:value="'DONG'">
+                                                            Đóng
+                                                        </option>
+
+                                                        <!-- ✅ TU_CHOI -> DONG -->
+                                                        <option th:if="${pa.trangThai.name() == 'TU_CHOI'}"
+                                                            th:value="'DONG'">
+                                                            Đóng
+                                                        </option>
+                                                    </select>
+
+                                                </form>
+                                            </td>
+
+                                            <!-- thời gian -->
+                                            <td class="text-muted"
+                                                th:text="${#temporals.format(pa.taoLuc, 'dd/MM/yyyy HH:mm')}">--
+                                            </td>
+                                            <td class="text-muted"
+                                                th:text="${#temporals.format(pa.capNhatLuc, 'dd/MM/yyyy HH:mm')}">--
+                                            </td>
+
+                                            <!-- thao tác -->
+                                            <td class="text-end">
+                                                <a class="btn btn-sm btn-outline-primary"
+                                                    th:href="@{/PhanAnh/xem/{id}(id=${pa.phanAnhId})}">
+                                                    Xem
+                                                </a>
+                                                <a class="btn btn-sm btn-outline-warning"
+                                                    th:href="@{/admin/PhanAnh/sua/{id}(id=${pa.phanAnhId})}">Sửa</a>
+                                                <!-- Xóa (nếu muốn) -->
+                                                <form class="d-inline"
+                                                    th:action="@{/admin/PhanAnh/xoa/{id}(id=${pa.phanAnhId})}"
+                                                    method="post" onsubmit="return confirm('Xóa phản ánh này nha?');">
+                                                    <button class="btn btn-sm btn-outline-danger"
+                                                        type="submit">Xóa</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+
+                                        <!-- ds rỗng -->
+                                        <tr th:if="${dsPhanAnh == null or #lists.isEmpty(dsPhanAnh)}">
+                                            <td colspan="8" class="text-center text-muted py-4">Không có phản ánh nào.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- pagination -->
+                                <ul class="pagination justify-content-center mt-4"
+                                    th:if="${dsPhanAnh != null and !#lists.isEmpty(dsPhanAnh)}">
+                                    <li class="page-item" th:classappend="${currentpage == 1} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/PhanAnh(pageNo=${currentpage - 1}, keyword=${keyword})}">Previous</a>
+                                    </li>
+
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalpage)}"
+                                        th:classappend="${i == currentpage} ? 'active'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/PhanAnh(pageNo=${i}, keyword=${keyword})}"
+                                            th:text="${i}">1</a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${currentpage == totalpage} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/admin/PhanAnh(pageNo=${currentpage + 1}, keyword=${keyword})}">Next</a>
+                                    </li>
+                                </ul>
+
+
+                            </div>
                         </div>
                     </div>
+
                 </div>
+            </main>
 
-            </div>
-        </main>
-
-        <footer th:replace="admin/layouts/footer::footer"></footer>
+            <footer th:replace="admin/layouts/footer::footer"></footer>
+        </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script th:src="@{/assets/js/scripts.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script th:src="@{/assets/js/scripts.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
